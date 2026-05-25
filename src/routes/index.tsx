@@ -433,10 +433,14 @@ function Index() {
                   key={item.id}
                   className="group relative flex flex-col overflow-hidden border-2 transition-all hover:-translate-y-1 hover:border-primary hover:shadow-2xl"
                 >
-                  <div className="relative flex h-32 items-center justify-center bg-gradient-to-br from-primary/15 via-accent/25 to-primary/5 text-6xl">
-                    <span className="transition-transform duration-500 group-hover:scale-125 group-hover:rotate-6">
-                      {item.emoji}
-                    </span>
+                  <div className="relative h-40 overflow-hidden">
+                    <img
+                      src={pickImg(item.name + " " + item.category)}
+                      alt={item.name}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     {item.bestseller && (
                       <Badge className="absolute left-2 top-2 bg-primary text-primary-foreground">
                         ⭐ Bestseller
