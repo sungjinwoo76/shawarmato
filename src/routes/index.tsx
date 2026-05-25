@@ -543,10 +543,14 @@ function Index() {
               onClick={() => setSelected(r)}
               className="group cursor-pointer overflow-hidden transition-all hover:-translate-y-1 hover:shadow-xl"
             >
-              <div className="relative flex h-48 items-center justify-center overflow-hidden bg-gradient-to-br from-primary/20 via-accent/30 to-primary/10 text-7xl">
-                <span className="transition-transform duration-500 group-hover:scale-125">
-                  {r.emoji}
-                </span>
+              <div className="relative h-48 overflow-hidden">
+                <img
+                  src={pickImg(r.cuisine + " " + r.name)}
+                  alt={r.name}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 {r.offer && (
                   <div className="absolute bottom-2 left-2 rounded-md bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">
                     <Flame className="mr-1 inline h-3 w-3" />
