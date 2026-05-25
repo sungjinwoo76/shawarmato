@@ -14,6 +14,45 @@ import {
 } from "@/components/ui/dialog";
 import { toast, Toaster } from "sonner";
 import heroImg from "@/assets/hero-shawarma.jpg";
+import imgChicken from "@/assets/food-chicken-shawarma.jpg";
+import imgBeef from "@/assets/food-beef-shawarma.jpg";
+import imgMutton from "@/assets/food-mutton.jpg";
+import imgPlatter from "@/assets/food-platter.jpg";
+import imgKebab from "@/assets/food-kebab.jpg";
+import imgFalafel from "@/assets/food-falafel.jpg";
+import imgVeg from "@/assets/food-veg.jpg";
+import imgCombo from "@/assets/food-combo.jpg";
+import imgSides from "@/assets/food-sides.jpg";
+import imgDessert from "@/assets/food-dessert.jpg";
+import imgDrinks from "@/assets/food-drinks.jpg";
+
+const CATEGORY_IMG: Record<string, string> = {
+  "Chicken Shawarma": imgChicken,
+  "Beef Shawarma": imgBeef,
+  "Mutton": imgMutton,
+  "Platters": imgPlatter,
+  "Kebabs": imgKebab,
+  "Falafel": imgFalafel,
+  "Veg": imgVeg,
+  "Combos": imgCombo,
+  "Sides": imgSides,
+  "Desserts": imgDessert,
+  "Drinks": imgDrinks,
+};
+const pickImg = (s: string) => {
+  const t = s.toLowerCase();
+  if (t.includes("dessert") || t.includes("baklava") || t.includes("kunafa") || t.includes("halwa")) return imgDessert;
+  if (t.includes("drink") || t.includes("lemonade") || t.includes("coffee") || t.includes("falooda")) return imgDrinks;
+  if (t.includes("kebab") || t.includes("doner") || t.includes("seekh") || t.includes("adana")) return imgKebab;
+  if (t.includes("falafel")) return imgFalafel;
+  if (t.includes("paneer") || t.includes("veg") || t.includes("mushroom") || t.includes("corn") || t.includes("hummus")) return imgVeg;
+  if (t.includes("mutton") || t.includes("lamb")) return imgMutton;
+  if (t.includes("beef")) return imgBeef;
+  if (t.includes("platter") || t.includes("plate") || t.includes("mixed grill")) return imgPlatter;
+  if (t.includes("combo") || t.includes("bucket") || t.includes("box") || t.includes("family")) return imgCombo;
+  if (t.includes("fries") || t.includes("pita") || t.includes("chips") || t.includes("side")) return imgSides;
+  return imgChicken;
+};
 
 export const Route = createFileRoute("/")({ component: Index });
 
@@ -250,14 +289,30 @@ function Index() {
     return r;
   }, [query, filter]);
 
-  const cartTotal = Object.values(cart).reduce((s, i) => s + i.price * i.qty, 0);
+  const cartSubtotal = Object.values(cart).reduce((s, i) => s + i.price * i.qty, 0);
   const cartCount = Object.values(cart).reduce((s, i) => s + i.qty, 0);
+  const REWARD_THRESHOLD = 1000;
+  const rewardUnlocked = cartSubtotal >= REWARD_THRESHOLD;
+  const rewardDiscount = rewardUnlocked ? Math.round(cartSubtotal * 0.1) : 0;
+  const deliveryFee = rewardUnlocked || cartSubtotal === 0 ? 0 : 49;
+  const cartTotal = Math.max(0, cartSubtotal - rewardDiscount + deliveryFee);
+  const rewardProgress = Math.min(100, (cartSubtotal / REWARD_THRESHOLD) * 100);
+  const amountToReward = Math.max(0, REWARD_THRESHOLD - cartSubtotal);
 
   const addToCart = (key: string, name: string, price: number) => {
-    setCart((c) => ({
-      ...c,
-      [key]: { name, price, qty: (c[key]?.qty || 0) + 1 },
-    }));
+    setCart((c) => {
+      const prevSub = Object.values(c).reduce((s, i) => s + i.price * i.qty, 0);
+      const next = { ...c, [key]: { name, price, qty: (c[key]?.qty || 0) + 1 } };
+      const nextSub = prevSub + price;
+      if (prevSub < REWARD_THRESHOLD && nextSub >= REWARD_THRESHOLD) {
+        setTimeout(() => {
+          toast.success("🎉 Reward unlocked!", {
+            description: "Free Baklava + Free Delivery + 10% OFF applied!",
+          });
+        }, 100);
+      }
+      return next;
+    });
     toast.success(`${name} added to cart`);
   };
   const removeFromCart = (key: string) => {
@@ -325,6 +380,15 @@ function Index() {
           </div>
         </div>
       </header>
+
+      {/* Reward strip */}
+      <div className="border-b bg-gradient-to-r from-primary via-destructive to-primary text-primary-foreground">
+        <div className="container mx-auto flex items-center justify-center gap-2 px-4 py-2 text-center text-xs font-semibold sm:text-sm">
+          <span className="animate-pulse">🔥</span>
+          Spend ₹1000 and unlock <span className="underline">Free Baklava + Free Delivery + 10% OFF</span> instantly
+          <span className="animate-pulse">🎁</span>
+        </div>
+      </div>
 
       {/* Hero */}
       <section className="relative overflow-hidden">
@@ -394,10 +458,14 @@ function Index() {
                   key={item.id}
                   className="group relative flex flex-col overflow-hidden border-2 transition-all hover:-translate-y-1 hover:border-primary hover:shadow-2xl"
                 >
-                  <div className="relative flex h-32 items-center justify-center bg-gradient-to-br from-primary/15 via-accent/25 to-primary/5 text-6xl">
-                    <span className="transition-transform duration-500 group-hover:scale-125 group-hover:rotate-6">
-                      {item.emoji}
-                    </span>
+                  <div className="relative h-40 overflow-hidden">
+                    <img
+                      src={pickImg(item.name + " " + item.category)}
+                      alt={item.name}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     {item.bestseller && (
                       <Badge className="absolute left-2 top-2 bg-primary text-primary-foreground">
                         ⭐ Bestseller
@@ -500,10 +568,14 @@ function Index() {
               onClick={() => setSelected(r)}
               className="group cursor-pointer overflow-hidden transition-all hover:-translate-y-1 hover:shadow-xl"
             >
-              <div className="relative flex h-48 items-center justify-center overflow-hidden bg-gradient-to-br from-primary/20 via-accent/30 to-primary/10 text-7xl">
-                <span className="transition-transform duration-500 group-hover:scale-125">
-                  {r.emoji}
-                </span>
+              <div className="relative h-48 overflow-hidden">
+                <img
+                  src={pickImg(r.cuisine + " " + r.name)}
+                  alt={r.name}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 {r.offer && (
                   <div className="absolute bottom-2 left-2 rounded-md bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">
                     <Flame className="mr-1 inline h-3 w-3" />
@@ -664,10 +736,30 @@ function Index() {
           </DialogHeader>
           {cartCount > 0 && (
             <>
+              {/* Reward progress */}
+              <div className={`rounded-xl border-2 p-3 ${rewardUnlocked ? "border-green-500 bg-green-50" : "border-primary/30 bg-primary/5"}`}>
+                {rewardUnlocked ? (
+                  <div className="flex items-center gap-2 text-sm font-semibold text-green-700">
+                    🎉 Reward unlocked: <span>Free Baklava + Free Delivery + 10% OFF</span>
+                  </div>
+                ) : (
+                  <div className="text-sm font-medium">
+                    Add <span className="font-bold text-primary">₹{amountToReward}</span> more to unlock
+                    <span className="font-semibold"> 🥮 Free Baklava + 🚚 Free Delivery + 10% OFF</span>
+                  </div>
+                )}
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-primary to-accent transition-all duration-500"
+                    style={{ width: `${rewardProgress}%` }}
+                  />
+                </div>
+              </div>
               <div className="space-y-2">
                 {Object.entries(cart).map(([k, item]) => (
-                  <div key={k} className="flex items-center justify-between gap-2 rounded-lg border p-3">
-                    <div>
+                  <div key={k} className="flex items-center gap-3 rounded-lg border p-3">
+                    <img src={pickImg(item.name)} alt="" className="h-12 w-12 rounded-md object-cover" />
+                    <div className="flex-1">
                       <div className="font-medium">{item.name}</div>
                       <div className="text-sm text-muted-foreground">
                         ₹{item.price} × {item.qty}
@@ -681,10 +773,34 @@ function Index() {
                     </div>
                   </div>
                 ))}
+                {rewardUnlocked && (
+                  <div className="flex items-center gap-3 rounded-lg border-2 border-dashed border-green-500 bg-green-50 p-3">
+                    <img src={imgDessert} alt="" className="h-12 w-12 rounded-md object-cover" />
+                    <div className="flex-1">
+                      <div className="font-medium text-green-700">Baklava (Complimentary)</div>
+                      <div className="text-sm text-green-600">Our gift for ordering ₹1000+ 🎁</div>
+                    </div>
+                    <span className="font-semibold text-green-700">FREE</span>
+                  </div>
+                )}
               </div>
-              <div className="flex items-center justify-between border-t pt-4">
-                <span className="text-lg font-bold">Total</span>
-                <span className="text-xl font-bold text-primary">₹{cartTotal}</span>
+              <div className="space-y-1 border-t pt-3 text-sm">
+                <div className="flex justify-between"><span>Subtotal</span><span>₹{cartSubtotal}</span></div>
+                <div className="flex justify-between">
+                  <span>Delivery</span>
+                  <span className={deliveryFee === 0 ? "text-green-600 font-semibold" : ""}>
+                    {deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}
+                  </span>
+                </div>
+                {rewardDiscount > 0 && (
+                  <div className="flex justify-between text-green-600 font-semibold">
+                    <span>Reward discount (10%)</span><span>−₹{rewardDiscount}</span>
+                  </div>
+                )}
+                <div className="flex items-center justify-between pt-2">
+                  <span className="text-lg font-bold">Total</span>
+                  <span className="text-2xl font-extrabold text-primary">₹{cartTotal}</span>
+                </div>
               </div>
               <Button
                 size="lg"
