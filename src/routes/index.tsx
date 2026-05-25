@@ -145,6 +145,37 @@ function Index() {
   const [selected, setSelected] = useState<Restaurant | null>(null);
   const [cart, setCart] = useState<Record<string, { name: string; price: number; qty: number }>>({});
   const [cartOpen, setCartOpen] = useState(false);
+  const [order, setOrder] = useState<{
+    id: string;
+    items: { name: string; price: number; qty: number }[];
+    total: number;
+    stage: 0 | 1 | 2 | 3;
+    placedAt: number;
+  } | null>(null);
+  const [trackerOpen, setTrackerOpen] = useState(false);
+
+  const STAGES = [
+    { label: "Confirmed", desc: "We've received your order", icon: CheckCircle2 },
+    { label: "Preparing", desc: "Chef is wrapping it up", icon: ChefHat },
+    { label: "On the way", desc: "Rider is heading to you", icon: Bike },
+    { label: "Delivered", desc: "Enjoy your shawarma!", icon: PackageCheck },
+  ] as const;
+
+  useEffect(() => {
+    if (!order || order.stage >= 3) return;
+    const t = setTimeout(() => {
+      setOrder((o) => {
+        if (!o) return o;
+        const next = (o.stage + 1) as 0 | 1 | 2 | 3;
+        const s = STAGES[next];
+        toast.success(`Order ${o.id}: ${s.label}`, { description: s.desc });
+        return { ...o, stage: next };
+      });
+    }, 5000);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order?.stage, order?.id]);
+
 
   const filtered = useMemo(() => {
     let r = RESTAURANTS.filter(
