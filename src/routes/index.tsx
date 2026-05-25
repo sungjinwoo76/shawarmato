@@ -14,6 +14,45 @@ import {
 } from "@/components/ui/dialog";
 import { toast, Toaster } from "sonner";
 import heroImg from "@/assets/hero-shawarma.jpg";
+import imgChicken from "@/assets/food-chicken-shawarma.jpg";
+import imgBeef from "@/assets/food-beef-shawarma.jpg";
+import imgMutton from "@/assets/food-mutton.jpg";
+import imgPlatter from "@/assets/food-platter.jpg";
+import imgKebab from "@/assets/food-kebab.jpg";
+import imgFalafel from "@/assets/food-falafel.jpg";
+import imgVeg from "@/assets/food-veg.jpg";
+import imgCombo from "@/assets/food-combo.jpg";
+import imgSides from "@/assets/food-sides.jpg";
+import imgDessert from "@/assets/food-dessert.jpg";
+import imgDrinks from "@/assets/food-drinks.jpg";
+
+const CATEGORY_IMG: Record<string, string> = {
+  "Chicken Shawarma": imgChicken,
+  "Beef Shawarma": imgBeef,
+  "Mutton": imgMutton,
+  "Platters": imgPlatter,
+  "Kebabs": imgKebab,
+  "Falafel": imgFalafel,
+  "Veg": imgVeg,
+  "Combos": imgCombo,
+  "Sides": imgSides,
+  "Desserts": imgDessert,
+  "Drinks": imgDrinks,
+};
+const pickImg = (s: string) => {
+  const t = s.toLowerCase();
+  if (t.includes("dessert") || t.includes("baklava") || t.includes("kunafa") || t.includes("halwa")) return imgDessert;
+  if (t.includes("drink") || t.includes("lemonade") || t.includes("coffee") || t.includes("falooda")) return imgDrinks;
+  if (t.includes("kebab") || t.includes("doner") || t.includes("seekh") || t.includes("adana")) return imgKebab;
+  if (t.includes("falafel")) return imgFalafel;
+  if (t.includes("paneer") || t.includes("veg") || t.includes("mushroom") || t.includes("corn") || t.includes("hummus")) return imgVeg;
+  if (t.includes("mutton") || t.includes("lamb")) return imgMutton;
+  if (t.includes("beef")) return imgBeef;
+  if (t.includes("platter") || t.includes("plate") || t.includes("mixed grill")) return imgPlatter;
+  if (t.includes("combo") || t.includes("bucket") || t.includes("box") || t.includes("family")) return imgCombo;
+  if (t.includes("fries") || t.includes("pita") || t.includes("chips") || t.includes("side")) return imgSides;
+  return imgChicken;
+};
 
 export const Route = createFileRoute("/")({ component: Index });
 
