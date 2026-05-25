@@ -300,10 +300,19 @@ function Index() {
   const amountToReward = Math.max(0, REWARD_THRESHOLD - cartSubtotal);
 
   const addToCart = (key: string, name: string, price: number) => {
-    setCart((c) => ({
-      ...c,
-      [key]: { name, price, qty: (c[key]?.qty || 0) + 1 },
-    }));
+    setCart((c) => {
+      const prevSub = Object.values(c).reduce((s, i) => s + i.price * i.qty, 0);
+      const next = { ...c, [key]: { name, price, qty: (c[key]?.qty || 0) + 1 } };
+      const nextSub = prevSub + price;
+      if (prevSub < REWARD_THRESHOLD && nextSub >= REWARD_THRESHOLD) {
+        setTimeout(() => {
+          toast.success("🎉 Reward unlocked!", {
+            description: "Free Baklava + Free Delivery + 10% OFF applied!",
+          });
+        }, 100);
+      }
+      return next;
+    });
     toast.success(`${name} added to cart`);
   };
   const removeFromCart = (key: string) => {
