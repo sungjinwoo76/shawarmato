@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { Search, MapPin, Star, Clock, Flame, ShoppingCart, Plus, Minus, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Search, MapPin, Star, Clock, Flame, ShoppingCart, Plus, Minus, X, CheckCircle2, ChefHat, Bike, PackageCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
