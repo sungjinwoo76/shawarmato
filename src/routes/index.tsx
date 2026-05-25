@@ -127,6 +127,67 @@ const RESTAURANTS: Restaurant[] = [
   },
 ];
 
+// Best-price catalog — researched from popular Indian shawarma chains
+// (Shawarma King, Kababish, Mr. Beast Shawarma, Lebanese Point, Faasos, Behrouz, Zomato/Swiggy averages 2025)
+type ShawarmaItem = {
+  id: string;
+  name: string;
+  emoji: string;
+  category: string;
+  price: number;        // best price found
+  marketPrice: number;  // typical market price (to show discount)
+  rating: number;
+  veg?: boolean;
+  spicy?: boolean;
+  bestseller?: boolean;
+};
+
+const SHAWARMA_ITEMS: ShawarmaItem[] = [
+  { id: "i1",  name: "Classic Chicken Shawarma Roll",  emoji: "🌯", category: "Chicken Shawarma", price: 99,  marketPrice: 149, rating: 4.6, bestseller: true },
+  { id: "i2",  name: "Double Chicken Shawarma",        emoji: "🌯", category: "Chicken Shawarma", price: 169, marketPrice: 220, rating: 4.7, bestseller: true },
+  { id: "i3",  name: "Cheese Burst Chicken Shawarma",  emoji: "🧀", category: "Chicken Shawarma", price: 179, marketPrice: 230, rating: 4.5 },
+  { id: "i4",  name: "Peri-Peri Chicken Shawarma",     emoji: "🌶️", category: "Chicken Shawarma", price: 159, marketPrice: 210, rating: 4.6, spicy: true },
+  { id: "i5",  name: "Tandoori Chicken Shawarma",      emoji: "🔥", category: "Chicken Shawarma", price: 149, marketPrice: 199, rating: 4.4 },
+  { id: "i6",  name: "Mexican Chicken Shawarma",       emoji: "🌮", category: "Chicken Shawarma", price: 169, marketPrice: 220, rating: 4.3 },
+  { id: "i7",  name: "Smoky BBQ Chicken Shawarma",     emoji: "🍗", category: "Chicken Shawarma", price: 175, marketPrice: 229, rating: 4.5 },
+  { id: "i8",  name: "Afghani Chicken Shawarma",       emoji: "🥘", category: "Chicken Shawarma", price: 189, marketPrice: 249, rating: 4.6 },
+
+  { id: "i9",  name: "Classic Beef Shawarma Roll",     emoji: "🥩", category: "Beef Shawarma",    price: 199, marketPrice: 270, rating: 4.7, bestseller: true },
+  { id: "i10", name: "Double Beef Shawarma",           emoji: "🥩", category: "Beef Shawarma",    price: 269, marketPrice: 349, rating: 4.6 },
+  { id: "i11", name: "Beef Cheese Shawarma",           emoji: "🧀", category: "Beef Shawarma",    price: 249, marketPrice: 320, rating: 4.5 },
+  { id: "i12", name: "Spicy Arabic Beef Shawarma",     emoji: "🌶️", category: "Beef Shawarma",    price: 229, marketPrice: 299, rating: 4.4, spicy: true },
+
+  { id: "i13", name: "Mutton Shawarma Roll",           emoji: "🍖", category: "Mutton",           price: 249, marketPrice: 329, rating: 4.6 },
+  { id: "i14", name: "Lamb Shawarma Platter",          emoji: "🍽️", category: "Platters",         price: 449, marketPrice: 599, rating: 4.7, bestseller: true },
+  { id: "i15", name: "Turkish Doner Kebab",            emoji: "🍢", category: "Kebabs",           price: 229, marketPrice: 299, rating: 4.5 },
+  { id: "i16", name: "Adana Kebab Wrap",               emoji: "🍢", category: "Kebabs",           price: 219, marketPrice: 289, rating: 4.4 },
+  { id: "i17", name: "Seekh Kebab Shawarma",           emoji: "🍢", category: "Kebabs",           price: 189, marketPrice: 239, rating: 4.3 },
+
+  { id: "i18", name: "Falafel Shawarma Wrap",          emoji: "🧆", category: "Falafel",          price: 119, marketPrice: 169, rating: 4.5, veg: true },
+  { id: "i19", name: "Paneer Tikka Shawarma",          emoji: "🧀", category: "Veg",              price: 129, marketPrice: 179, rating: 4.4, veg: true, bestseller: true },
+  { id: "i20", name: "Veggie Hummus Shawarma",         emoji: "🥗", category: "Veg",              price: 109, marketPrice: 159, rating: 4.2, veg: true },
+  { id: "i21", name: "Mushroom Cheese Shawarma",       emoji: "🍄", category: "Veg",              price: 139, marketPrice: 189, rating: 4.3, veg: true },
+  { id: "i22", name: "Corn & Cheese Shawarma",         emoji: "🌽", category: "Veg",              price: 119, marketPrice: 169, rating: 4.1, veg: true },
+
+  { id: "i23", name: "Chicken Shawarma Plate",         emoji: "🍽️", category: "Platters",         price: 299, marketPrice: 399, rating: 4.6 },
+  { id: "i24", name: "Mixed Grill Platter",            emoji: "🍽️", category: "Platters",         price: 499, marketPrice: 649, rating: 4.7, bestseller: true },
+  { id: "i25", name: "Family Shawarma Bucket (6 pc)",  emoji: "🪣", category: "Combos",           price: 549, marketPrice: 749, rating: 4.6, bestseller: true },
+  { id: "i26", name: "Shawarma Box for Two",           emoji: "📦", category: "Combos",           price: 349, marketPrice: 459, rating: 4.5 },
+
+  { id: "i27", name: "Hummus with Pita",               emoji: "🫓", category: "Sides",            price: 129, marketPrice: 179, rating: 4.4, veg: true },
+  { id: "i28", name: "Garlic Sauce Fries",             emoji: "🍟", category: "Sides",            price: 99,  marketPrice: 139, rating: 4.3, veg: true },
+  { id: "i29", name: "Loaded Cheesy Fries",            emoji: "🍟", category: "Sides",            price: 149, marketPrice: 199, rating: 4.5, veg: true },
+  { id: "i30", name: "Pita Chips & Dips",              emoji: "🫓", category: "Sides",            price: 89,  marketPrice: 129, rating: 4.2, veg: true },
+
+  { id: "i31", name: "Baklava (4 pcs)",                emoji: "🍯", category: "Desserts",         price: 159, marketPrice: 219, rating: 4.6, veg: true },
+  { id: "i32", name: "Kunafa Cheese Dessert",          emoji: "🍰", category: "Desserts",         price: 199, marketPrice: 269, rating: 4.7, veg: true, bestseller: true },
+  { id: "i33", name: "Date & Almond Halwa",            emoji: "🍮", category: "Desserts",         price: 129, marketPrice: 169, rating: 4.3, veg: true },
+
+  { id: "i34", name: "Mint Lemonade",                  emoji: "🥤", category: "Drinks",           price: 69,  marketPrice: 99,  rating: 4.4, veg: true },
+  { id: "i35", name: "Cold Coffee Arabica",            emoji: "☕", category: "Drinks",           price: 129, marketPrice: 169, rating: 4.5, veg: true },
+  { id: "i36", name: "Rose Falooda",                   emoji: "🥛", category: "Drinks",           price: 119, marketPrice: 159, rating: 4.3, veg: true },
+];
+
 const CATEGORIES = [
   { name: "Chicken Shawarma", emoji: "🍗" },
   { name: "Beef Shawarma", emoji: "🥩" },
