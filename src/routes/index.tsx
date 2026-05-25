@@ -370,6 +370,86 @@ function Index() {
         </div>
       </section>
 
+      {/* Best Prices Catalog */}
+      <section className="container mx-auto px-4 pb-4">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <Badge className="mb-2 bg-accent text-accent-foreground">🔥 Lowest prices online</Badge>
+            <h2 className="text-3xl font-extrabold tracking-tight">
+              Best Shawarma Prices, <span className="text-primary">Hand-Picked</span>
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {SHAWARMA_ITEMS.length} items · prices compared across top delivery apps · updated daily
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {SHAWARMA_ITEMS
+            .filter((i) => !query || i.name.toLowerCase().includes(query.toLowerCase()) || i.category.toLowerCase().includes(query.toLowerCase()))
+            .map((item) => {
+              const discount = Math.round(((item.marketPrice - item.price) / item.marketPrice) * 100);
+              return (
+                <Card
+                  key={item.id}
+                  className="group relative flex flex-col overflow-hidden border-2 transition-all hover:-translate-y-1 hover:border-primary hover:shadow-2xl"
+                >
+                  <div className="relative flex h-32 items-center justify-center bg-gradient-to-br from-primary/15 via-accent/25 to-primary/5 text-6xl">
+                    <span className="transition-transform duration-500 group-hover:scale-125 group-hover:rotate-6">
+                      {item.emoji}
+                    </span>
+                    {item.bestseller && (
+                      <Badge className="absolute left-2 top-2 bg-primary text-primary-foreground">
+                        ⭐ Bestseller
+                      </Badge>
+                    )}
+                    <Badge className="absolute right-2 top-2 bg-green-600 text-white">
+                      -{discount}%
+                    </Badge>
+                    {item.veg !== undefined && (
+                      <span
+                        className={`absolute bottom-2 left-2 flex h-4 w-4 items-center justify-center border-2 ${
+                          item.veg ? "border-green-600" : "border-red-600"
+                        } bg-white`}
+                      >
+                        <span
+                          className={`h-2 w-2 rounded-full ${
+                            item.veg ? "bg-green-600" : "bg-red-600"
+                          }`}
+                        />
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-1 flex-col p-3">
+                    <h3 className="line-clamp-2 text-sm font-bold leading-snug">{item.name}</h3>
+                    <div className="mt-1 flex items-center gap-1 text-xs">
+                      <Star className="h-3 w-3 fill-green-600 text-green-600" />
+                      <span className="font-medium">{item.rating}</span>
+                      <span className="text-muted-foreground">· {item.category}</span>
+                      {item.spicy && <Flame className="h-3 w-3 text-destructive" />}
+                    </div>
+                    <div className="mt-auto flex items-end justify-between pt-3">
+                      <div>
+                        <div className="text-lg font-extrabold text-primary">₹{item.price}</div>
+                        <div className="text-xs text-muted-foreground line-through">
+                          ₹{item.marketPrice}
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        onClick={() => addToCart(item.id, item.name, item.price)}
+                        className="rounded-full shadow-md"
+                      >
+                        <Plus className="h-4 w-4" /> Add
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+        </div>
+      </section>
+
       {/* Categories */}
       <section className="container mx-auto px-4 py-12">
         <h2 className="mb-6 text-2xl font-bold">What's on your mind?</h2>
