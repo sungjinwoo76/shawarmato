@@ -727,10 +727,30 @@ function Index() {
           </DialogHeader>
           {cartCount > 0 && (
             <>
+              {/* Reward progress */}
+              <div className={`rounded-xl border-2 p-3 ${rewardUnlocked ? "border-green-500 bg-green-50" : "border-primary/30 bg-primary/5"}`}>
+                {rewardUnlocked ? (
+                  <div className="flex items-center gap-2 text-sm font-semibold text-green-700">
+                    🎉 Reward unlocked: <span>Free Baklava + Free Delivery + 10% OFF</span>
+                  </div>
+                ) : (
+                  <div className="text-sm font-medium">
+                    Add <span className="font-bold text-primary">₹{amountToReward}</span> more to unlock
+                    <span className="font-semibold"> 🥮 Free Baklava + 🚚 Free Delivery + 10% OFF</span>
+                  </div>
+                )}
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-primary to-accent transition-all duration-500"
+                    style={{ width: `${rewardProgress}%` }}
+                  />
+                </div>
+              </div>
               <div className="space-y-2">
                 {Object.entries(cart).map(([k, item]) => (
-                  <div key={k} className="flex items-center justify-between gap-2 rounded-lg border p-3">
-                    <div>
+                  <div key={k} className="flex items-center gap-3 rounded-lg border p-3">
+                    <img src={pickImg(item.name)} alt="" className="h-12 w-12 rounded-md object-cover" />
+                    <div className="flex-1">
                       <div className="font-medium">{item.name}</div>
                       <div className="text-sm text-muted-foreground">
                         ₹{item.price} × {item.qty}
@@ -744,10 +764,34 @@ function Index() {
                     </div>
                   </div>
                 ))}
+                {rewardUnlocked && (
+                  <div className="flex items-center gap-3 rounded-lg border-2 border-dashed border-green-500 bg-green-50 p-3">
+                    <img src={imgDessert} alt="" className="h-12 w-12 rounded-md object-cover" />
+                    <div className="flex-1">
+                      <div className="font-medium text-green-700">Baklava (Complimentary)</div>
+                      <div className="text-sm text-green-600">Our gift for ordering ₹1000+ 🎁</div>
+                    </div>
+                    <span className="font-semibold text-green-700">FREE</span>
+                  </div>
+                )}
               </div>
-              <div className="flex items-center justify-between border-t pt-4">
-                <span className="text-lg font-bold">Total</span>
-                <span className="text-xl font-bold text-primary">₹{cartTotal}</span>
+              <div className="space-y-1 border-t pt-3 text-sm">
+                <div className="flex justify-between"><span>Subtotal</span><span>₹{cartSubtotal}</span></div>
+                <div className="flex justify-between">
+                  <span>Delivery</span>
+                  <span className={deliveryFee === 0 ? "text-green-600 font-semibold" : ""}>
+                    {deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}
+                  </span>
+                </div>
+                {rewardDiscount > 0 && (
+                  <div className="flex justify-between text-green-600 font-semibold">
+                    <span>Reward discount (10%)</span><span>−₹{rewardDiscount}</span>
+                  </div>
+                )}
+                <div className="flex items-center justify-between pt-2">
+                  <span className="text-lg font-bold">Total</span>
+                  <span className="text-2xl font-extrabold text-primary">₹{cartTotal}</span>
+                </div>
               </div>
               <Button
                 size="lg"
