@@ -28,32 +28,96 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
+  --color-saffron: var(--saffron);
+  --color-ember: var(--ember);
+  --color-charcoal: var(--charcoal);
+  --color-cream: var(--cream);
+  --color-success: var(--success);
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(0.99 0.005 80);
-  --foreground: oklch(0.20 0.03 40);
+  --radius: 0.875rem;
+  /* Warm Sand cream background, rich charcoal foreground */
+  --background: oklch(0.985 0.012 75);
+  --foreground: oklch(0.18 0.025 40);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.20 0.03 40);
+  --card-foreground: oklch(0.18 0.025 40);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.20 0.03 40);
-  --primary: oklch(0.62 0.20 35);
+  --popover-foreground: oklch(0.18 0.025 40);
+  /* Crimson ember — appetite stimulating */
+  --primary: oklch(0.58 0.22 28);
   --primary-foreground: oklch(0.99 0.005 80);
-  --secondary: oklch(0.95 0.03 70);
-  --secondary-foreground: oklch(0.30 0.05 40);
-  --muted: oklch(0.96 0.01 80);
-  --muted-foreground: oklch(0.50 0.03 60);
-  --accent: oklch(0.85 0.15 75);
-  --accent-foreground: oklch(0.25 0.05 40);
+  --secondary: oklch(0.96 0.025 70);
+  --secondary-foreground: oklch(0.25 0.04 40);
+  --muted: oklch(0.96 0.012 75);
+  --muted-foreground: oklch(0.48 0.025 55);
+  /* Saffron / turmeric — warm accent */
+  --accent: oklch(0.82 0.17 75);
+  --accent-foreground: oklch(0.20 0.05 40);
   --destructive: oklch(0.58 0.24 27);
   --destructive-foreground: oklch(0.99 0.005 80);
-  --border: oklch(0.90 0.02 70);
-  --input: oklch(0.92 0.02 70);
-  --ring: oklch(0.62 0.20 35);
+  --border: oklch(0.91 0.018 70);
+  --input: oklch(0.92 0.018 70);
+  --ring: oklch(0.58 0.22 28);
+
+  --saffron: oklch(0.82 0.17 75);
+  --ember: oklch(0.62 0.23 35);
+  --charcoal: oklch(0.18 0.025 40);
+  --cream: oklch(0.985 0.012 75);
+  --success: oklch(0.62 0.16 145);
+
+  --gradient-hero: linear-gradient(135deg, oklch(0.58 0.22 28) 0%, oklch(0.62 0.23 35) 45%, oklch(0.78 0.18 65) 100%);
+  --gradient-warm: linear-gradient(90deg, oklch(0.62 0.23 35) 0%, oklch(0.82 0.17 75) 100%);
+  --gradient-card: linear-gradient(160deg, oklch(1 0 0) 0%, oklch(0.97 0.02 70) 100%);
+  --shadow-warm: 0 12px 40px -12px color-mix(in oklab, oklch(0.58 0.22 28) 35%, transparent);
+  --shadow-soft: 0 4px 20px -6px color-mix(in oklab, oklch(0.18 0.025 40) 15%, transparent);
 }
 
 @layer base {
   * { border-color: var(--color-border); }
-  body { background-color: var(--color-background); color: var(--color-foreground); }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-feature-settings: "ss01", "cv11";
+  }
+  h1, h2, h3, h4 { letter-spacing: -0.02em; }
+}
+
+@layer utilities {
+  .bg-gradient-hero { background-image: var(--gradient-hero); }
+  .bg-gradient-warm { background-image: var(--gradient-warm); }
+  .bg-gradient-card { background-image: var(--gradient-card); }
+  .shadow-warm { box-shadow: var(--shadow-warm); }
+  .shadow-soft { box-shadow: var(--shadow-soft); }
+  .text-balance { text-wrap: balance; }
+
+  @keyframes float-up {
+    0% { transform: translateY(8px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  .animate-float-up { animation: float-up 0.5s ease-out both; }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .animate-shimmer {
+    background: linear-gradient(90deg, transparent, color-mix(in oklab, white 30%, transparent), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2.5s linear infinite;
+  }
+
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--primary) 60%, transparent); }
+    70% { box-shadow: 0 0 0 12px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+  .animate-pulse-ring { animation: pulse-ring 1.8s ease-out infinite; }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-marquee { animation: marquee 30s linear infinite; }
 }
