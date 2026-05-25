@@ -289,8 +289,15 @@ function Index() {
     return r;
   }, [query, filter]);
 
-  const cartTotal = Object.values(cart).reduce((s, i) => s + i.price * i.qty, 0);
+  const cartSubtotal = Object.values(cart).reduce((s, i) => s + i.price * i.qty, 0);
   const cartCount = Object.values(cart).reduce((s, i) => s + i.qty, 0);
+  const REWARD_THRESHOLD = 1000;
+  const rewardUnlocked = cartSubtotal >= REWARD_THRESHOLD;
+  const rewardDiscount = rewardUnlocked ? Math.round(cartSubtotal * 0.1) : 0;
+  const deliveryFee = rewardUnlocked || cartSubtotal === 0 ? 0 : 49;
+  const cartTotal = Math.max(0, cartSubtotal - rewardDiscount + deliveryFee);
+  const rewardProgress = Math.min(100, (cartSubtotal / REWARD_THRESHOLD) * 100);
+  const amountToReward = Math.max(0, REWARD_THRESHOLD - cartSubtotal);
 
   const addToCart = (key: string, name: string, price: number) => {
     setCart((c) => ({
