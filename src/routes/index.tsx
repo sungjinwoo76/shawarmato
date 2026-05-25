@@ -549,14 +549,80 @@ function Index() {
                 size="lg"
                 className="w-full"
                 onClick={() => {
-                  toast.success("Order placed! 🌯");
+                  const items = Object.values(cart);
+                  const id = `SW${Math.floor(1000 + Math.random() * 9000)}`;
+                  setOrder({ id, items, total: cartTotal, stage: 0, placedAt: Date.now() });
+                  toast.success(`Order ${id} confirmed! 🌯`, {
+                    description: "We're preparing your shawarma.",
+                  });
                   setCart({});
                   setCartOpen(false);
+                  setTrackerOpen(true);
                 }}
               >
                 Checkout
               </Button>
             </>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Order Tracker Dialog */}
+      <Dialog open={trackerOpen} onOpenChange={setTrackerOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Order Tracking</DialogTitle>
+            <DialogDescription>
+              {order ? `Order ${order.id} • ₹${order.total}` : "No active order"}
+            </DialogDescription>
+          </DialogHeader>
+          {order && (
+            <div className="space-y-4">
+              <div className="space-y-3">
+                {STAGES.map((s, i) => {
+                  const Icon = s.icon;
+                  const done = i < order.stage;
+                  const active = i === order.stage;
+                  return (
+                    <div key={s.label} className="flex items-start gap-3">
+                      <div
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
+                          done
+                            ? "border-green-600 bg-green-600 text-white"
+                            : active
+                            ? "border-primary bg-primary text-primary-foreground animate-pulse"
+                            : "border-muted bg-muted text-muted-foreground"
+                        }`}
+                      >
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1 pt-1">
+                        <div className={`font-semibold ${active ? "text-primary" : done ? "text-foreground" : "text-muted-foreground"}`}>
+                          {s.label}
+                          {active && <span className="ml-2 text-xs font-normal text-muted-foreground">in progress…</span>}
+                          {done && <span className="ml-2 text-xs font-normal text-green-600">✓</span>}
+                        </div>
+                        <p className="text-sm text-muted-foreground">{s.desc}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="rounded-lg border bg-muted/30 p-3 text-sm">
+                <div className="mb-1 font-medium">Items</div>
+                {order.items.map((it, i) => (
+                  <div key={i} className="flex justify-between text-muted-foreground">
+                    <span>{it.name} × {it.qty}</span>
+                    <span>₹{it.price * it.qty}</span>
+                  </div>
+                ))}
+              </div>
+              {order.stage === 3 && (
+                <Button className="w-full" onClick={() => { setOrder(null); setTrackerOpen(false); }}>
+                  Done
+                </Button>
+              )}
+            </div>
           )}
         </DialogContent>
       </Dialog>
