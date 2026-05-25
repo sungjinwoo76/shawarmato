@@ -234,6 +234,19 @@ function Index() {
                 <option>Dubai</option>
               </select>
             </div>
+            {order && (
+              <Button
+                variant="outline"
+                onClick={() => setTrackerOpen(true)}
+                className="relative gap-2"
+              >
+                <Bike className="h-4 w-4 text-primary" />
+                <span className="hidden sm:inline">Track Order</span>
+                <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-semibold text-accent-foreground">
+                  {STAGES[order.stage].label}
+                </span>
+              </Button>
+            )}
             <Button
               variant="outline"
               onClick={() => setCartOpen(true)}
