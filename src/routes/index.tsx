@@ -381,6 +381,15 @@ function Index() {
         </div>
       </header>
 
+      {/* Reward strip */}
+      <div className="border-b bg-gradient-to-r from-primary via-destructive to-primary text-primary-foreground">
+        <div className="container mx-auto flex items-center justify-center gap-2 px-4 py-2 text-center text-xs font-semibold sm:text-sm">
+          <span className="animate-pulse">🔥</span>
+          Spend ₹1000 and unlock <span className="underline">Free Baklava + Free Delivery + 10% OFF</span> instantly
+          <span className="animate-pulse">🎁</span>
+        </div>
+      </div>
+
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div
