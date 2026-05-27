@@ -220,6 +220,37 @@ function Index() {
     total: number; stage: 0 | 1 | 2 | 3; placedAt: number;
   } | null>(null);
   const [trackerOpen, setTrackerOpen] = useState(false);
+  const [greetingOpen, setGreetingOpen] = useState(false);
+  const [customerName, setCustomerName] = useState("");
+
+  // ====== Pop sound (WebAudio, no asset) ======
+  const playPop = () => {
+    try {
+      const AC: typeof AudioContext =
+        (window as unknown as { AudioContext: typeof AudioContext; webkitAudioContext?: typeof AudioContext }).AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const ctx = new AC();
+      const now = ctx.currentTime;
+      // little two-note "ding-pop"
+      [
+        { f: 880, t: 0,    d: 0.12, v: 0.18 },
+        { f: 1320, t: 0.09, d: 0.18, v: 0.22 },
+      ].forEach(({ f, t, d, v }) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "sine";
+        o.frequency.setValueAtTime(f, now + t);
+        o.frequency.exponentialRampToValueAtTime(f * 0.6, now + t + d);
+        g.gain.setValueAtTime(0.0001, now + t);
+        g.gain.exponentialRampToValueAtTime(v, now + t + 0.015);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + t + d);
+        o.connect(g).connect(ctx.destination);
+        o.start(now + t);
+        o.stop(now + t + d + 0.02);
+      });
+      setTimeout(() => ctx.close(), 600);
+    } catch { /* silent */ }
+  };
 
   // ====== Psychology widgets state ======
   const [liveOrders, setLiveOrders] = useState(247);
