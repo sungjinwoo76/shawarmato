@@ -737,6 +737,52 @@ function Index() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* ============ GREETING ============ */}
+      <Dialog open={greetingOpen} onOpenChange={setGreetingOpen}>
+        <DialogContent className="max-w-md overflow-hidden border-2 border-primary/30 bg-gradient-card">
+          <div className="absolute -top-16 -right-16 h-40 w-40 rounded-full bg-gradient-warm opacity-30 blur-3xl" />
+          <div className="absolute -bottom-16 -left-16 h-40 w-40 rounded-full bg-gradient-hero opacity-25 blur-3xl" />
+          <DialogHeader className="relative">
+            <div className="mx-auto mb-2 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-hero text-5xl shadow-warm animate-confetti-burst">
+              🌯
+            </div>
+            <DialogTitle className="text-center text-3xl font-black">
+              <span className="text-fancy">Shukran{customerName ? `, ${customerName}` : ""}!</span>
+            </DialogTitle>
+            <DialogDescription className="text-center text-base">
+              {order ? (
+                <>Order <b className="text-primary">{order.id}</b> is sizzling on the grill. Our chef just smiled. 👨‍🍳</>
+              ) : "Your order is in good hands."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="relative space-y-3">
+            <div className="rounded-xl border-2 border-dashed border-primary/30 bg-primary/5 p-3 text-center text-sm">
+              <div className="font-bold text-primary">A little secret from us 🤫</div>
+              <div className="mt-1 text-muted-foreground">
+                "The best shawarma is the one shared. Tag <b>@shawarmato</b> for a chance to win <b>free shawarma for a month</b>."
+              </div>
+            </div>
+            {!customerName && (
+              <Input
+                placeholder="What should we call you? (optional)"
+                onChange={(e) => setCustomerName(e.target.value.trim())}
+                className="text-center font-semibold"
+              />
+            )}
+            <Button
+              size="lg"
+              className="w-full shadow-warm"
+              onClick={() => { setGreetingOpen(false); setTrackerOpen(true); }}
+            >
+              <Bike className="h-4 w-4" /> Track my shawarma
+            </Button>
+            <p className="text-center text-xs text-muted-foreground">
+              Estimated arrival in <b className="text-foreground">28–32 min</b> · Keep the napkins ready 😋
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
