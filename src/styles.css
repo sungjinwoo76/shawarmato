@@ -80,8 +80,15 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-feature-settings: "ss01", "cv11";
+    background-image:
+      radial-gradient(circle at 12% 8%, color-mix(in oklab, var(--ember) 14%, transparent) 0%, transparent 38%),
+      radial-gradient(circle at 88% 12%, color-mix(in oklab, var(--saffron) 18%, transparent) 0%, transparent 42%),
+      radial-gradient(circle at 50% 100%, color-mix(in oklab, var(--ember) 10%, transparent) 0%, transparent 55%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'><circle cx='1' cy='1' r='0.7' fill='%23000' opacity='0.04'/></svg>");
+    background-attachment: fixed;
   }
-  h1, h2, h3, h4 { letter-spacing: -0.02em; }
+  h1, h2, h3, h4 { letter-spacing: -0.025em; }
+  h1, h2 { font-weight: 900; }
 }
 
 @layer utilities {
