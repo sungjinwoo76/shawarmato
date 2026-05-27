@@ -321,6 +321,7 @@ function Index() {
       const next = { ...c, [key]: { name, price, qty: (c[key]?.qty || 0) + 1, note: note ?? c[key]?.note } };
       const nextSub = prevSub + price;
       if (prevSub < REWARD_THRESHOLD && nextSub >= REWARD_THRESHOLD) {
+        playPop();
         setTimeout(() => {
           toast.success("🎉 Reward unlocked!", {
             description: "Free Baklava + Free Delivery + 10% OFF applied!",
