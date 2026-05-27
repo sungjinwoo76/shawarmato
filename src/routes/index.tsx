@@ -438,12 +438,15 @@ function Index() {
             <Badge className="mb-4 bg-accent/20 text-accent border border-accent/40 backdrop-blur">
               <Sparkles className="mr-1 h-3 w-3" /> #1 Shawarma destination in {location}
             </Badge>
-            <h1 className="text-balance text-4xl font-black leading-[1.05] md:text-6xl">
-              Authentic shawarma, <br />
-              <span className="bg-gradient-warm bg-clip-text text-transparent">slow-roasted</span> to perfection.
+            <h1 className="text-balance text-5xl font-black leading-[1.02] md:text-7xl">
+              <span className="block text-cream/95">Crave it.</span>
+              <span className="block text-fancy drop-shadow-[0_2px_20px_rgba(255,120,60,0.35)]">Unwrap heaven.</span>
+              <span className="mt-2 block text-2xl md:text-3xl font-semibold text-cream/80 tracking-tight">
+                Slow-roasted shawarma, <span className="italic text-accent">obsessively</span> crafted.
+              </span>
             </h1>
-            <p className="mt-4 max-w-lg text-lg text-cream/85">
-              Hand-carved meats. Toasted pita. Bold sauces. Delivered hot in 30 minutes — or your shawarma is on us.
+            <p className="mt-5 max-w-lg text-lg text-cream/85 leading-relaxed">
+              Charcoal-kissed meats. Pillowy pita. Sauces stolen from <span className="text-accent font-semibold">Beirut grandmothers</span>. On your doorstep in 30 minutes — or it's <span className="font-bold text-cream">on the house</span>.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
