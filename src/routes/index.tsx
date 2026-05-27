@@ -450,190 +450,74 @@ function Index() {
         </div>
       </div>
 
-      {/* ============ HERO ============ */}
-      <section className="relative overflow-hidden border-b">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroImg})` }} />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(110deg, oklch(0.18 0.025 40 / 0.92) 0%, oklch(0.18 0.025 40 / 0.6) 50%, oklch(0.18 0.025 40 / 0.3) 100%)" }} />
-        <div className="container relative mx-auto px-4 py-16 md:py-24">
-          <div className="max-w-2xl text-cream animate-float-up">
-            <Badge className="mb-4 bg-accent/20 text-accent border border-accent/40 backdrop-blur">
-              <Sparkles className="mr-1 h-3 w-3" /> #1 Shawarma destination in {location}
-            </Badge>
-            <h1 className="text-balance text-5xl font-black leading-[1.02] md:text-7xl">
-              <span className="block text-cream/95">Crave it.</span>
-              <span className="block text-fancy drop-shadow-[0_2px_20px_rgba(255,120,60,0.35)]">Unwrap heaven.</span>
-              <span className="mt-2 block text-2xl md:text-3xl font-semibold text-cream/80 tracking-tight">
-                Slow-roasted shawarma, <span className="italic text-accent">obsessively</span> crafted.
-              </span>
-            </h1>
-            <p className="mt-5 max-w-lg text-lg text-cream/85 leading-relaxed">
-              Charcoal-kissed meats. Pillowy pita. Sauces stolen from <span className="text-accent font-semibold">Beirut grandmothers</span>. On your doorstep in 30 minutes — or it's <span className="font-bold text-cream">on the house</span>.
-            </p>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button size="lg" className="shadow-warm" onClick={() => document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth" })}>
-                <Flame className="h-4 w-4" /> Order in {location}
-              </Button>
-              <Button size="lg" variant="outline" className="border-cream/40 bg-cream/10 text-cream hover:bg-cream/20 backdrop-blur" onClick={() => document.getElementById("builder")?.scrollIntoView({ behavior: "smooth" })}>
-                <ChefHat className="h-4 w-4" /> Build Your Own
-              </Button>
-            </div>
-
-            <div className="mt-8 flex flex-wrap items-center gap-6 text-sm">
-              <div className="flex items-center gap-2"><div className="flex -space-x-2">{[1,2,3,4].map(i => <div key={i} className="h-7 w-7 rounded-full border-2 border-cream bg-gradient-warm" />)}</div><span><b>1.2M+</b> happy customers</span></div>
-              <div className="flex items-center gap-1"><Star className="h-4 w-4 fill-accent text-accent" /><b>4.8</b> · 240K reviews</div>
-            </div>
-          </div>
+      {/* ============ SLIDE DECK ============ */}
+      <main className="relative" style={{ minHeight: "calc(100vh - 130px)" }}>
+        {/* Slide stage */}
+        <div key={slide} className="animate-float-up">
+          {slide === 0 && (
+            <SlideHero location={location} liveOrders={liveOrders} onOrder={() => goSlide(3)} onBuild={() => goSlide(4)} />
+          )}
+          {slide === 1 && (
+            <SlideWhyUs reviewIdx={reviewIdx} setReviewIdx={setReviewIdx} dealLeft={dealLeft} fmtTime={fmtTime} />
+          )}
+          {slide === 2 && <SlideMagic />}
+          {slide === 3 && (
+            <SlideMenu
+              activeCat={activeCat} setActiveCat={setActiveCat}
+              filteredItems={filteredItems} cart={cart}
+              addToCart={addToCart} removeFromCart={removeFromCart}
+              liveOrders={liveOrders} location={location}
+            />
+          )}
+          {slide === 4 && <BuilderSection id="builder" addToCart={addToCart} />}
+          {slide === 5 && <SlideFounders />}
+          {slide === 6 && <SlideFAQs />}
+          {slide === 7 && (
+            <SlideOrderCTA
+              cartCount={cartCount} cartTotal={cartTotal}
+              onOpenCart={() => setCartOpen(true)} onMenu={() => goSlide(3)}
+              rewardProgress={rewardProgress} amountToReward={amountToReward}
+              rewardUnlocked={rewardUnlocked}
+            />
+          )}
         </div>
-      </section>
 
-      {/* ============ TRUST BAR ============ */}
-      <section className="border-b bg-gradient-to-b from-card to-background">
-        <div className="container mx-auto grid grid-cols-2 gap-3 px-4 py-8 md:grid-cols-4 md:gap-5">
-          {[
-            { icon: Zap,    title: "10-min express",  sub: "or it's on us",       tint: "from-amber-400 to-orange-500", glow: "shadow-[0_8px_30px_-8px_rgba(251,146,60,0.55)]" },
-            { icon: Award,  title: "100% Halal",      sub: "certified daily",     tint: "from-emerald-400 to-teal-600", glow: "shadow-[0_8px_30px_-8px_rgba(20,184,166,0.5)]" },
-            { icon: Users,  title: "1.2M+ fans",      sub: "served worldwide",    tint: "from-rose-400 to-red-600",     glow: "shadow-[0_8px_30px_-8px_rgba(244,63,94,0.55)]" },
-            { icon: Heart,  title: "98% love it",     sub: "real verified ❤",     tint: "from-pink-400 to-fuchsia-600", glow: "shadow-[0_8px_30px_-8px_rgba(217,70,239,0.55)]" },
-          ].map((t, i) => (
-            <div
-              key={i}
-              className={`group relative flex items-center gap-3 rounded-2xl border-2 bg-gradient-card p-3 md:p-4 transition-all hover:-translate-y-1 hover:border-primary ${t.glow}`}
-              style={{ animationDelay: `${i * 80}ms` }}
+        {/* Prev / Next arrows */}
+        <button
+          onClick={() => goSlide(slide - 1)}
+          disabled={slide === 0}
+          aria-label="Previous slide"
+          className="fixed left-3 top-1/2 z-30 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary/30 bg-card/90 backdrop-blur shadow-warm transition-all hover:border-primary hover:scale-110 disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          <ChevronLeft className="h-5 w-5 text-primary" />
+        </button>
+        <button
+          onClick={() => goSlide(slide + 1)}
+          disabled={slide === totalSlides - 1}
+          aria-label="Next slide"
+          className="fixed right-3 top-1/2 z-30 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary/30 bg-card/90 backdrop-blur shadow-warm transition-all hover:border-primary hover:scale-110 disabled:opacity-30 disabled:cursor-not-allowed animate-pulse-ring"
+        >
+          <ChevronRight className="h-5 w-5 text-primary" />
+        </button>
+
+        {/* Bottom dot rail */}
+        <div className="fixed bottom-4 left-1/2 z-30 -translate-x-1/2 flex items-center gap-2 rounded-full border bg-card/90 px-3 py-2 backdrop-blur shadow-soft">
+          {SLIDE_LABELS.map((label, i) => (
+            <button
+              key={label}
+              onClick={() => goSlide(i)}
+              aria-label={`Go to ${label}`}
+              className={`group flex items-center gap-1.5 rounded-full transition-all ${
+                i === slide ? "bg-primary px-3 py-1.5 text-primary-foreground shadow-warm" : "h-2 w-2 bg-muted-foreground/30 hover:bg-primary/60"
+              }`}
             >
-              <div className={`relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${t.tint} text-white shadow-lg`}>
-                <span className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
-                <t.icon className="h-7 w-7 animate-icon-pop drop-shadow" strokeWidth={2.5} />
-              </div>
-              <div className="leading-tight">
-                <div className="text-base font-black tracking-tight">{t.title}</div>
-                <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{t.sub}</div>
-              </div>
-            </div>
+              {i === slide && <span className="text-[10px] font-black uppercase tracking-wider">{label}</span>}
+            </button>
           ))}
+          <span className="ml-1 text-[10px] font-bold text-muted-foreground tabular-nums">{slide + 1}/{totalSlides}</span>
         </div>
-      </section>
+      </main>
 
-      {/* ============ FLASH DEAL ============ */}
-      <section className="container mx-auto px-4 pt-10">
-        <Card className="overflow-hidden border-2 border-primary/30 bg-gradient-card shadow-warm">
-          <div className="flex flex-col md:flex-row items-center gap-6 p-6">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-hero text-3xl shadow-warm animate-pulse-ring">⚡</div>
-            <div className="flex-1">
-              <Badge className="mb-2 bg-primary text-primary-foreground">FLASH DEAL</Badge>
-              <h3 className="text-2xl font-black">Today only: every shawarma under ₹200 — up to <span className="text-primary">45% OFF</span></h3>
-              <p className="mt-1 text-sm text-muted-foreground">Hand-picked by our chefs. Stock refreshed daily. Once it's gone, it's gone.</p>
-            </div>
-            <div className="flex items-center gap-2 rounded-xl border-2 border-primary bg-primary/5 px-5 py-3">
-              <Timer className="h-5 w-5 text-primary" />
-              <div className="leading-tight">
-                <div className="text-[10px] font-bold uppercase text-muted-foreground">Ends in</div>
-                <div className="font-mono text-2xl font-black text-primary tabular-nums">{fmtTime(dealLeft)}</div>
-              </div>
-            </div>
-          </div>
-        </Card>
-      </section>
-
-      {/* ============ BUILD YOUR OWN SHAWARMA ============ */}
-      <BuilderSection id="builder" addToCart={addToCart} />
-
-      {/* ============ CATEGORIES ============ */}
-      <section className="container mx-auto px-4 py-10">
-        <div className="mb-5 flex items-end justify-between">
-          <div>
-            <Badge className="mb-2 bg-accent/20 text-accent-foreground border border-accent/40">What's cravin'?</Badge>
-            <h2 className="text-3xl font-black tracking-tight">Shop by category</h2>
-          </div>
-        </div>
-        <div className="flex gap-3 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide">
-          <CategoryChip name="All" icon="🔥" count={SHAWARMA_ITEMS.length} active={activeCat === "All"} onClick={() => setActiveCat("All")} />
-          {CATEGORIES.map((c) => (
-            <CategoryChip key={c.name} name={c.name} icon={c.icon} count={c.count} active={activeCat === c.name} onClick={() => setActiveCat(c.name)} />
-          ))}
-        </div>
-      </section>
-
-      {/* ============ CATALOG ============ */}
-      <section id="catalog" className="container mx-auto px-4 pb-12">
-        <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 className="text-3xl font-black tracking-tight">
-              {activeCat === "All" ? "Best shawarmas" : activeCat} <span className="text-primary">in {location}</span>
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {filteredItems.length} items · best prices guaranteed · live updated
-            </p>
-          </div>
-          <div className="flex items-center gap-2 rounded-full border bg-card px-4 py-2 text-sm">
-            <TrendingUp className="h-4 w-4 text-success" />
-            <span className="font-semibold">{liveOrders}</span>
-            <span className="text-muted-foreground">orders in the last hour</span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {filteredItems.map((item) => <ItemCard key={item.id} item={item} qty={cart[item.id]?.qty || 0} onAdd={() => addToCart(item.id, item.name, item.price)} onRemove={() => removeFromCart(item.id)} />)}
-        </div>
-
-        {filteredItems.length === 0 && (
-          <div className="py-20 text-center text-muted-foreground">No items found. Try another search.</div>
-        )}
-      </section>
-
-      {/* ============ SOCIAL PROOF ============ */}
-      <section className="border-y bg-card">
-        <div className="container mx-auto px-4 py-12">
-          <div className="mx-auto max-w-3xl text-center">
-            <Badge className="mb-3 bg-accent/20 text-accent-foreground border border-accent/40">Real reviews · verified orders</Badge>
-            <h2 className="text-3xl font-black tracking-tight">Loved by shawarma fanatics</h2>
-          </div>
-          <div className="mx-auto mt-8 max-w-2xl">
-            <Card className="relative overflow-hidden border-2 p-8 text-center shadow-soft">
-              <div className="absolute top-3 left-3 text-7xl leading-none opacity-10">"</div>
-              <div key={reviewIdx} className="animate-float-up">
-                <div className="flex justify-center gap-0.5 text-accent">
-                  {[1,2,3,4,5].map(i => <Star key={i} className="h-5 w-5 fill-current" />)}
-                </div>
-                <p className="mt-4 text-lg font-medium text-balance">"{REVIEWS[reviewIdx].text}"</p>
-                <div className="mt-4 text-sm">
-                  <div className="font-bold">{REVIEWS[reviewIdx].name}</div>
-                  <div className="text-muted-foreground">{REVIEWS[reviewIdx].order} · verified order</div>
-                </div>
-              </div>
-            </Card>
-            <div className="mt-4 flex justify-center gap-1.5">
-              {REVIEWS.map((_, i) => (
-                <button key={i} onClick={() => setReviewIdx(i)} className={`h-1.5 rounded-full transition-all ${i === reviewIdx ? "w-6 bg-primary" : "w-1.5 bg-muted-foreground/30"}`} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============ FOOTER ============ */}
-      <footer className="bg-charcoal text-cream">
-        <div className="container mx-auto grid gap-8 px-4 py-12 md:grid-cols-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-hero text-xl shadow-warm">🌯</div>
-              <span className="text-xl font-black">Shawarmato</span>
-            </div>
-            <p className="mt-3 text-sm text-cream/70">Wrapping the world, one shawarma at a time. Since 2026.</p>
-          </div>
-          {[
-            { h: "Company", l: ["About Us", "Careers", "Press", "Blog"] },
-            { h: "For chefs", l: ["Partner with us", "Restaurant app", "Become a rider"] },
-            { h: "Learn more", l: ["Privacy", "Terms", "Contact", "Help"] },
-          ].map((c) => (
-            <div key={c.h}>
-              <h4 className="mb-3 font-bold">{c.h}</h4>
-              <ul className="space-y-2 text-sm text-cream/70">{c.l.map(x => <li key={x} className="hover:text-accent cursor-pointer transition-colors">{x}</li>)}</ul>
-            </div>
-          ))}
-        </div>
-        <div className="border-t border-cream/10 py-4 text-center text-xs text-cream/60">© 2026 Shawarmato · All flavors reserved.</div>
-      </footer>
 
       {/* ============ CART ============ */}
       <Dialog open={cartOpen} onOpenChange={setCartOpen}>
