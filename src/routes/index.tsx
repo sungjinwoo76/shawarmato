@@ -467,17 +467,27 @@ function Index() {
       </section>
 
       {/* ============ TRUST BAR ============ */}
-      <section className="border-b bg-card">
-        <div className="container mx-auto grid grid-cols-2 gap-4 px-4 py-6 md:grid-cols-4">
+      <section className="border-b bg-gradient-to-b from-card to-background">
+        <div className="container mx-auto grid grid-cols-2 gap-3 px-4 py-8 md:grid-cols-4 md:gap-5">
           {[
-            { icon: Zap,    title: "10-min express",  sub: "or free on us" },
-            { icon: Award,  title: "100% Halal",      sub: "certified meats" },
-            { icon: Users,  title: "1.2M+ orders",    sub: "served worldwide" },
-            { icon: Heart,  title: "98% love it",     sub: "5-star reviews" },
+            { icon: Zap,    title: "10-min express",  sub: "or it's on us",       tint: "from-amber-400 to-orange-500", glow: "shadow-[0_8px_30px_-8px_rgba(251,146,60,0.55)]" },
+            { icon: Award,  title: "100% Halal",      sub: "certified daily",     tint: "from-emerald-400 to-teal-600", glow: "shadow-[0_8px_30px_-8px_rgba(20,184,166,0.5)]" },
+            { icon: Users,  title: "1.2M+ fans",      sub: "served worldwide",    tint: "from-rose-400 to-red-600",     glow: "shadow-[0_8px_30px_-8px_rgba(244,63,94,0.55)]" },
+            { icon: Heart,  title: "98% love it",     sub: "real verified ❤",     tint: "from-pink-400 to-fuchsia-600", glow: "shadow-[0_8px_30px_-8px_rgba(217,70,239,0.55)]" },
           ].map((t, i) => (
-            <div key={i} className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary"><t.icon className="h-5 w-5" /></div>
-              <div className="leading-tight"><div className="font-bold text-sm">{t.title}</div><div className="text-xs text-muted-foreground">{t.sub}</div></div>
+            <div
+              key={i}
+              className={`group relative flex items-center gap-3 rounded-2xl border-2 bg-gradient-card p-3 md:p-4 transition-all hover:-translate-y-1 hover:border-primary ${t.glow}`}
+              style={{ animationDelay: `${i * 80}ms` }}
+            >
+              <div className={`relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${t.tint} text-white shadow-lg`}>
+                <span className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
+                <t.icon className="h-7 w-7 animate-icon-pop drop-shadow" strokeWidth={2.5} />
+              </div>
+              <div className="leading-tight">
+                <div className="text-base font-black tracking-tight">{t.title}</div>
+                <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{t.sub}</div>
+              </div>
             </div>
           ))}
         </div>
