@@ -228,6 +228,20 @@ function Index() {
   const [trackerOpen, setTrackerOpen] = useState(false);
   const [greetingOpen, setGreetingOpen] = useState(false);
   const [customerName, setCustomerName] = useState("");
+  const [slide, setSlide] = useState(0);
+  const SLIDE_LABELS = ["Hero", "Why us", "Magic", "Menu", "Build", "Founders", "FAQs", "Order"] as const;
+  const totalSlides = SLIDE_LABELS.length;
+  const goSlide = (n: number) => setSlide(Math.max(0, Math.min(totalSlides - 1, n)));
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement)?.tagName === "INPUT" || (e.target as HTMLElement)?.tagName === "TEXTAREA") return;
+      if (e.key === "ArrowRight" || e.key === "PageDown") goSlide(slide + 1);
+      if (e.key === "ArrowLeft" || e.key === "PageUp") goSlide(slide - 1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [slide]);
 
   // ====== Pop sound (WebAudio, no asset) ======
   const playPop = () => {
