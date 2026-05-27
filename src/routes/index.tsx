@@ -673,16 +673,17 @@ function Index() {
                   <span className="text-2xl font-black text-primary">₹{cartTotal}</span>
                 </div>
               </div>
-              <Button size="lg" className="w-full shadow-warm" onClick={() => {
+              <Button size="lg" className="w-full shadow-warm text-base font-bold animate-pulse-ring" onClick={() => {
                 const items = Object.values(cart);
                 const id = `SW${Math.floor(1000 + Math.random() * 9000)}`;
+                playPop();
                 setOrder({ id, items, total: cartTotal, stage: 0, placedAt: Date.now() });
                 toast.success(`Order ${id} confirmed! 🌯`, { description: "Chef is on it." });
                 setCart({});
                 setCartOpen(false);
-                setTrackerOpen(true);
+                setGreetingOpen(true);
               }}>
-                Checkout · ₹{cartTotal}
+                <Sparkles className="h-4 w-4" /> Place order · ₹{cartTotal}
               </Button>
             </>
           ) : (
