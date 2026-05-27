@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
-  Search, MapPin, Star, Clock, Flame, ShoppingCart, Plus, Minus, X,
+  Search, MapPin, Star, Flame, ShoppingCart, Plus, Minus,
   CheckCircle2, ChefHat, Bike, PackageCheck, Zap, Timer, Users, Sparkles,
-  Award, TrendingUp, Heart, Leaf,
+  Award, TrendingUp, Heart, Leaf, ChevronLeft, ChevronRight, Tv, Phone,
+  Gift, Lock, Smile, Trophy,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,9 @@ import { Card } from "@/components/ui/card";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  Accordion, AccordionContent, AccordionItem, AccordionTrigger,
+} from "@/components/ui/accordion";
 import { toast, Toaster } from "sonner";
 import heroImg from "@/assets/hero-shawarma.jpg";
 import imgChicken from "@/assets/food-chicken-shawarma.jpg";
@@ -25,6 +29,8 @@ import imgCombo from "@/assets/food-combo.jpg";
 import imgSides from "@/assets/food-sides.jpg";
 import imgDessert from "@/assets/food-dessert.jpg";
 import imgDrinks from "@/assets/food-drinks.jpg";
+import founder1 from "@/assets/founder-1.jpg";
+import founder2 from "@/assets/founder-2.jpg";
 
 const pickImg = (s: string) => {
   const t = s.toLowerCase();
