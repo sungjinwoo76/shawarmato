@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
-  Search, MapPin, Star, Clock, Flame, ShoppingCart, Plus, Minus, X,
+  Search, MapPin, Star, Flame, ShoppingCart, Plus, Minus,
   CheckCircle2, ChefHat, Bike, PackageCheck, Zap, Timer, Users, Sparkles,
-  Award, TrendingUp, Heart, Leaf,
+  Award, TrendingUp, Heart, Leaf, ChevronLeft, ChevronRight, Tv, Phone,
+  Gift, Lock, Smile, Trophy,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,9 @@ import { Card } from "@/components/ui/card";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  Accordion, AccordionContent, AccordionItem, AccordionTrigger,
+} from "@/components/ui/accordion";
 import { toast, Toaster } from "sonner";
 import heroImg from "@/assets/hero-shawarma.jpg";
 import imgChicken from "@/assets/food-chicken-shawarma.jpg";
@@ -25,6 +29,8 @@ import imgCombo from "@/assets/food-combo.jpg";
 import imgSides from "@/assets/food-sides.jpg";
 import imgDessert from "@/assets/food-dessert.jpg";
 import imgDrinks from "@/assets/food-drinks.jpg";
+import founder1 from "@/assets/founder-1.jpg";
+import founder2 from "@/assets/founder-2.jpg";
 
 const pickImg = (s: string) => {
   const t = s.toLowerCase();
@@ -222,6 +228,20 @@ function Index() {
   const [trackerOpen, setTrackerOpen] = useState(false);
   const [greetingOpen, setGreetingOpen] = useState(false);
   const [customerName, setCustomerName] = useState("");
+  const [slide, setSlide] = useState(0);
+  const SLIDE_LABELS = ["Hero", "Why us", "Magic", "Menu", "Build", "Founders", "FAQs", "Order"] as const;
+  const totalSlides = SLIDE_LABELS.length;
+  const goSlide = (n: number) => setSlide(Math.max(0, Math.min(totalSlides - 1, n)));
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement)?.tagName === "INPUT" || (e.target as HTMLElement)?.tagName === "TEXTAREA") return;
+      if (e.key === "ArrowRight" || e.key === "PageDown") goSlide(slide + 1);
+      if (e.key === "ArrowLeft" || e.key === "PageUp") goSlide(slide - 1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [slide]);
 
   // ====== Pop sound (WebAudio, no asset) ======
   const playPop = () => {
@@ -430,190 +450,74 @@ function Index() {
         </div>
       </div>
 
-      {/* ============ HERO ============ */}
-      <section className="relative overflow-hidden border-b">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroImg})` }} />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(110deg, oklch(0.18 0.025 40 / 0.92) 0%, oklch(0.18 0.025 40 / 0.6) 50%, oklch(0.18 0.025 40 / 0.3) 100%)" }} />
-        <div className="container relative mx-auto px-4 py-16 md:py-24">
-          <div className="max-w-2xl text-cream animate-float-up">
-            <Badge className="mb-4 bg-accent/20 text-accent border border-accent/40 backdrop-blur">
-              <Sparkles className="mr-1 h-3 w-3" /> #1 Shawarma destination in {location}
-            </Badge>
-            <h1 className="text-balance text-5xl font-black leading-[1.02] md:text-7xl">
-              <span className="block text-cream/95">Crave it.</span>
-              <span className="block text-fancy drop-shadow-[0_2px_20px_rgba(255,120,60,0.35)]">Unwrap heaven.</span>
-              <span className="mt-2 block text-2xl md:text-3xl font-semibold text-cream/80 tracking-tight">
-                Slow-roasted shawarma, <span className="italic text-accent">obsessively</span> crafted.
-              </span>
-            </h1>
-            <p className="mt-5 max-w-lg text-lg text-cream/85 leading-relaxed">
-              Charcoal-kissed meats. Pillowy pita. Sauces stolen from <span className="text-accent font-semibold">Beirut grandmothers</span>. On your doorstep in 30 minutes — or it's <span className="font-bold text-cream">on the house</span>.
-            </p>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button size="lg" className="shadow-warm" onClick={() => document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth" })}>
-                <Flame className="h-4 w-4" /> Order in {location}
-              </Button>
-              <Button size="lg" variant="outline" className="border-cream/40 bg-cream/10 text-cream hover:bg-cream/20 backdrop-blur" onClick={() => document.getElementById("builder")?.scrollIntoView({ behavior: "smooth" })}>
-                <ChefHat className="h-4 w-4" /> Build Your Own
-              </Button>
-            </div>
-
-            <div className="mt-8 flex flex-wrap items-center gap-6 text-sm">
-              <div className="flex items-center gap-2"><div className="flex -space-x-2">{[1,2,3,4].map(i => <div key={i} className="h-7 w-7 rounded-full border-2 border-cream bg-gradient-warm" />)}</div><span><b>1.2M+</b> happy customers</span></div>
-              <div className="flex items-center gap-1"><Star className="h-4 w-4 fill-accent text-accent" /><b>4.8</b> · 240K reviews</div>
-            </div>
-          </div>
+      {/* ============ SLIDE DECK ============ */}
+      <main className="relative" style={{ minHeight: "calc(100vh - 130px)" }}>
+        {/* Slide stage */}
+        <div key={slide} className="animate-float-up">
+          {slide === 0 && (
+            <SlideHero location={location} liveOrders={liveOrders} onOrder={() => goSlide(3)} onBuild={() => goSlide(4)} />
+          )}
+          {slide === 1 && (
+            <SlideWhyUs reviewIdx={reviewIdx} setReviewIdx={setReviewIdx} dealLeft={dealLeft} fmtTime={fmtTime} />
+          )}
+          {slide === 2 && <SlideMagic />}
+          {slide === 3 && (
+            <SlideMenu
+              activeCat={activeCat} setActiveCat={setActiveCat}
+              filteredItems={filteredItems} cart={cart}
+              addToCart={addToCart} removeFromCart={removeFromCart}
+              liveOrders={liveOrders} location={location}
+            />
+          )}
+          {slide === 4 && <BuilderSection id="builder" addToCart={addToCart} />}
+          {slide === 5 && <SlideFounders />}
+          {slide === 6 && <SlideFAQs />}
+          {slide === 7 && (
+            <SlideOrderCTA
+              cartCount={cartCount} cartTotal={cartTotal}
+              onOpenCart={() => setCartOpen(true)} onMenu={() => goSlide(3)}
+              rewardProgress={rewardProgress} amountToReward={amountToReward}
+              rewardUnlocked={rewardUnlocked}
+            />
+          )}
         </div>
-      </section>
 
-      {/* ============ TRUST BAR ============ */}
-      <section className="border-b bg-gradient-to-b from-card to-background">
-        <div className="container mx-auto grid grid-cols-2 gap-3 px-4 py-8 md:grid-cols-4 md:gap-5">
-          {[
-            { icon: Zap,    title: "10-min express",  sub: "or it's on us",       tint: "from-amber-400 to-orange-500", glow: "shadow-[0_8px_30px_-8px_rgba(251,146,60,0.55)]" },
-            { icon: Award,  title: "100% Halal",      sub: "certified daily",     tint: "from-emerald-400 to-teal-600", glow: "shadow-[0_8px_30px_-8px_rgba(20,184,166,0.5)]" },
-            { icon: Users,  title: "1.2M+ fans",      sub: "served worldwide",    tint: "from-rose-400 to-red-600",     glow: "shadow-[0_8px_30px_-8px_rgba(244,63,94,0.55)]" },
-            { icon: Heart,  title: "98% love it",     sub: "real verified ❤",     tint: "from-pink-400 to-fuchsia-600", glow: "shadow-[0_8px_30px_-8px_rgba(217,70,239,0.55)]" },
-          ].map((t, i) => (
-            <div
-              key={i}
-              className={`group relative flex items-center gap-3 rounded-2xl border-2 bg-gradient-card p-3 md:p-4 transition-all hover:-translate-y-1 hover:border-primary ${t.glow}`}
-              style={{ animationDelay: `${i * 80}ms` }}
+        {/* Prev / Next arrows */}
+        <button
+          onClick={() => goSlide(slide - 1)}
+          disabled={slide === 0}
+          aria-label="Previous slide"
+          className="fixed left-3 top-1/2 z-30 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary/30 bg-card/90 backdrop-blur shadow-warm transition-all hover:border-primary hover:scale-110 disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          <ChevronLeft className="h-5 w-5 text-primary" />
+        </button>
+        <button
+          onClick={() => goSlide(slide + 1)}
+          disabled={slide === totalSlides - 1}
+          aria-label="Next slide"
+          className="fixed right-3 top-1/2 z-30 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary/30 bg-card/90 backdrop-blur shadow-warm transition-all hover:border-primary hover:scale-110 disabled:opacity-30 disabled:cursor-not-allowed animate-pulse-ring"
+        >
+          <ChevronRight className="h-5 w-5 text-primary" />
+        </button>
+
+        {/* Bottom dot rail */}
+        <div className="fixed bottom-4 left-1/2 z-30 -translate-x-1/2 flex items-center gap-2 rounded-full border bg-card/90 px-3 py-2 backdrop-blur shadow-soft">
+          {SLIDE_LABELS.map((label, i) => (
+            <button
+              key={label}
+              onClick={() => goSlide(i)}
+              aria-label={`Go to ${label}`}
+              className={`group flex items-center gap-1.5 rounded-full transition-all ${
+                i === slide ? "bg-primary px-3 py-1.5 text-primary-foreground shadow-warm" : "h-2 w-2 bg-muted-foreground/30 hover:bg-primary/60"
+              }`}
             >
-              <div className={`relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${t.tint} text-white shadow-lg`}>
-                <span className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
-                <t.icon className="h-7 w-7 animate-icon-pop drop-shadow" strokeWidth={2.5} />
-              </div>
-              <div className="leading-tight">
-                <div className="text-base font-black tracking-tight">{t.title}</div>
-                <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{t.sub}</div>
-              </div>
-            </div>
+              {i === slide && <span className="text-[10px] font-black uppercase tracking-wider">{label}</span>}
+            </button>
           ))}
+          <span className="ml-1 text-[10px] font-bold text-muted-foreground tabular-nums">{slide + 1}/{totalSlides}</span>
         </div>
-      </section>
+      </main>
 
-      {/* ============ FLASH DEAL ============ */}
-      <section className="container mx-auto px-4 pt-10">
-        <Card className="overflow-hidden border-2 border-primary/30 bg-gradient-card shadow-warm">
-          <div className="flex flex-col md:flex-row items-center gap-6 p-6">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-hero text-3xl shadow-warm animate-pulse-ring">⚡</div>
-            <div className="flex-1">
-              <Badge className="mb-2 bg-primary text-primary-foreground">FLASH DEAL</Badge>
-              <h3 className="text-2xl font-black">Today only: every shawarma under ₹200 — up to <span className="text-primary">45% OFF</span></h3>
-              <p className="mt-1 text-sm text-muted-foreground">Hand-picked by our chefs. Stock refreshed daily. Once it's gone, it's gone.</p>
-            </div>
-            <div className="flex items-center gap-2 rounded-xl border-2 border-primary bg-primary/5 px-5 py-3">
-              <Timer className="h-5 w-5 text-primary" />
-              <div className="leading-tight">
-                <div className="text-[10px] font-bold uppercase text-muted-foreground">Ends in</div>
-                <div className="font-mono text-2xl font-black text-primary tabular-nums">{fmtTime(dealLeft)}</div>
-              </div>
-            </div>
-          </div>
-        </Card>
-      </section>
-
-      {/* ============ BUILD YOUR OWN SHAWARMA ============ */}
-      <BuilderSection id="builder" addToCart={addToCart} />
-
-      {/* ============ CATEGORIES ============ */}
-      <section className="container mx-auto px-4 py-10">
-        <div className="mb-5 flex items-end justify-between">
-          <div>
-            <Badge className="mb-2 bg-accent/20 text-accent-foreground border border-accent/40">What's cravin'?</Badge>
-            <h2 className="text-3xl font-black tracking-tight">Shop by category</h2>
-          </div>
-        </div>
-        <div className="flex gap-3 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide">
-          <CategoryChip name="All" icon="🔥" count={SHAWARMA_ITEMS.length} active={activeCat === "All"} onClick={() => setActiveCat("All")} />
-          {CATEGORIES.map((c) => (
-            <CategoryChip key={c.name} name={c.name} icon={c.icon} count={c.count} active={activeCat === c.name} onClick={() => setActiveCat(c.name)} />
-          ))}
-        </div>
-      </section>
-
-      {/* ============ CATALOG ============ */}
-      <section id="catalog" className="container mx-auto px-4 pb-12">
-        <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 className="text-3xl font-black tracking-tight">
-              {activeCat === "All" ? "Best shawarmas" : activeCat} <span className="text-primary">in {location}</span>
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {filteredItems.length} items · best prices guaranteed · live updated
-            </p>
-          </div>
-          <div className="flex items-center gap-2 rounded-full border bg-card px-4 py-2 text-sm">
-            <TrendingUp className="h-4 w-4 text-success" />
-            <span className="font-semibold">{liveOrders}</span>
-            <span className="text-muted-foreground">orders in the last hour</span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {filteredItems.map((item) => <ItemCard key={item.id} item={item} qty={cart[item.id]?.qty || 0} onAdd={() => addToCart(item.id, item.name, item.price)} onRemove={() => removeFromCart(item.id)} />)}
-        </div>
-
-        {filteredItems.length === 0 && (
-          <div className="py-20 text-center text-muted-foreground">No items found. Try another search.</div>
-        )}
-      </section>
-
-      {/* ============ SOCIAL PROOF ============ */}
-      <section className="border-y bg-card">
-        <div className="container mx-auto px-4 py-12">
-          <div className="mx-auto max-w-3xl text-center">
-            <Badge className="mb-3 bg-accent/20 text-accent-foreground border border-accent/40">Real reviews · verified orders</Badge>
-            <h2 className="text-3xl font-black tracking-tight">Loved by shawarma fanatics</h2>
-          </div>
-          <div className="mx-auto mt-8 max-w-2xl">
-            <Card className="relative overflow-hidden border-2 p-8 text-center shadow-soft">
-              <div className="absolute top-3 left-3 text-7xl leading-none opacity-10">"</div>
-              <div key={reviewIdx} className="animate-float-up">
-                <div className="flex justify-center gap-0.5 text-accent">
-                  {[1,2,3,4,5].map(i => <Star key={i} className="h-5 w-5 fill-current" />)}
-                </div>
-                <p className="mt-4 text-lg font-medium text-balance">"{REVIEWS[reviewIdx].text}"</p>
-                <div className="mt-4 text-sm">
-                  <div className="font-bold">{REVIEWS[reviewIdx].name}</div>
-                  <div className="text-muted-foreground">{REVIEWS[reviewIdx].order} · verified order</div>
-                </div>
-              </div>
-            </Card>
-            <div className="mt-4 flex justify-center gap-1.5">
-              {REVIEWS.map((_, i) => (
-                <button key={i} onClick={() => setReviewIdx(i)} className={`h-1.5 rounded-full transition-all ${i === reviewIdx ? "w-6 bg-primary" : "w-1.5 bg-muted-foreground/30"}`} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============ FOOTER ============ */}
-      <footer className="bg-charcoal text-cream">
-        <div className="container mx-auto grid gap-8 px-4 py-12 md:grid-cols-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-hero text-xl shadow-warm">🌯</div>
-              <span className="text-xl font-black">Shawarmato</span>
-            </div>
-            <p className="mt-3 text-sm text-cream/70">Wrapping the world, one shawarma at a time. Since 2026.</p>
-          </div>
-          {[
-            { h: "Company", l: ["About Us", "Careers", "Press", "Blog"] },
-            { h: "For chefs", l: ["Partner with us", "Restaurant app", "Become a rider"] },
-            { h: "Learn more", l: ["Privacy", "Terms", "Contact", "Help"] },
-          ].map((c) => (
-            <div key={c.h}>
-              <h4 className="mb-3 font-bold">{c.h}</h4>
-              <ul className="space-y-2 text-sm text-cream/70">{c.l.map(x => <li key={x} className="hover:text-accent cursor-pointer transition-colors">{x}</li>)}</ul>
-            </div>
-          ))}
-        </div>
-        <div className="border-t border-cream/10 py-4 text-center text-xs text-cream/60">© 2026 Shawarmato · All flavors reserved.</div>
-      </footer>
 
       {/* ============ CART ============ */}
       <Dialog open={cartOpen} onOpenChange={setCartOpen}>
@@ -1009,3 +913,357 @@ const REVIEWS = [
   { name: "Rohan T.", order: "Peri-Peri Chicken", text: "Crisp wrap, juicy meat, BURN. Exactly what a Friday night needs." },
   { name: "Meera S.", order: "Falafel Wrap + Hummus", text: "Best veg shawarma in town. The falafel is crisp outside, fluffy inside." },
 ];
+
+const FOUNDERS = [
+  {
+    name: "Kareem Al-Shafi",
+    role: "Co-founder · Head Chef",
+    img: founder1,
+    quote: "I learned to wrap shawarma from my grandfather in Aleppo at age 9. Every roll we serve carries that fire.",
+    bio: "Trained under masters in Aleppo, Beirut and Istanbul. Spent 11 years perfecting a single garlic toum recipe before opening Shawarmato.",
+    badge: "20 years on the spit",
+  },
+  {
+    name: "Aanya Mehra",
+    role: "Co-founder · CEO",
+    img: founder2,
+    quote: "I quit a corporate job after eating Kareem's shawarma on a side street in Beirut. Some flavors deserve a movement.",
+    bio: "Former product lead at a top food-tech unicorn. Obsessed with making world-class food affordable and 10-minute-fast.",
+    badge: "Built 0→1M users",
+  },
+];
+
+const FAQS = [
+  { q: "What makes Shawarmato's shawarma different?", a: "We slow-roast our meats on a real vertical spit for 6+ hours, marinate overnight in 14 spices, and toast every wrap on a stone griddle. No microwaves. No shortcuts. Ever." },
+  { q: "Is the meat actually halal?", a: "Yes, 100%. Every supplier is certified by the Halal Authority of India and audited monthly. Certificates are displayed at every kitchen." },
+  { q: "How is 10-minute express delivery possible?", a: "Cloud kitchens in 2 km radius of every major neighborhood, riders waiting before you even tap order, and pre-prepped wraps that finish on demand. If we're late beyond 30 min, it's free." },
+  { q: "Can I really build my own shawarma?", a: "Absolutely. Pick wrap → protein → cheese → veggies → sauces → spice. Your exact instructions print at the chef's station. Price updates live as you build." },
+  { q: "What is the ₹1000 reward?", a: "Spend ₹1000 in a single order and unlock free Baklava + free delivery + 10% off your entire cart. Stackable with any active flash deal." },
+  { q: "Do you have vegetarian and vegan options?", a: "Yes — falafel, paneer, mushroom-cheese, hummus, and a fully vegan saj-wrap line. All marked with a green dot." },
+  { q: "What if I don't love my order?", a: "Tap 'Not happy' inside the order tracker within 30 minutes. We refund instantly — no questions, no forms. Happens to ~0.3% of orders." },
+  { q: "Where do you deliver?", a: "Currently Mumbai, Delhi, Bangalore and Dubai. New cities every month — vote for yours on the founders page." },
+];
+
+// ============ SLIDE COMPONENTS ============
+
+function SlideHero({ location, liveOrders, onOrder, onBuild }: { location: string; liveOrders: number; onOrder: () => void; onBuild: () => void }) {
+  return (
+    <section className="relative overflow-hidden" style={{ minHeight: "calc(100vh - 130px)" }}>
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroImg})` }} />
+      <div className="absolute inset-0" style={{ background: "linear-gradient(110deg, oklch(0.18 0.025 40 / 0.94) 0%, oklch(0.18 0.025 40 / 0.7) 50%, oklch(0.18 0.025 40 / 0.35) 100%)" }} />
+      <div className="container relative mx-auto flex flex-col justify-center px-4 py-12 md:py-16" style={{ minHeight: "calc(100vh - 130px)" }}>
+        <div className="max-w-3xl text-cream">
+          <Badge className="mb-4 bg-accent/20 text-accent border border-accent/40 backdrop-blur w-fit">
+            <Sparkles className="mr-1 h-3 w-3" /> #1 Shawarma destination in {location}
+          </Badge>
+          <h1 className="text-balance text-5xl font-black leading-[1] md:text-7xl lg:text-8xl">
+            <span className="block text-cream/95">Crave it.</span>
+            <span className="block text-fancy drop-shadow-[0_2px_30px_rgba(255,120,60,0.45)]">Unwrap heaven.</span>
+          </h1>
+          <p className="mt-6 max-w-xl text-xl font-semibold text-cream/90 tracking-tight">
+            Slow-roasted shawarma, <span className="italic text-accent">obsessively</span> crafted by chefs from Aleppo, Beirut & Istanbul.
+          </p>
+          <p className="mt-3 max-w-xl text-base text-cream/75 leading-relaxed">
+            Charcoal-kissed meats. Pillowy pita. Sauces stolen from <span className="text-accent font-semibold">Beirut grandmothers</span>. On your doorstep in 30 minutes — or it's <span className="font-bold text-cream">on the house</span>.
+          </p>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Button size="lg" className="shadow-warm text-base font-bold animate-pulse-ring" onClick={onOrder}>
+              <Flame className="h-4 w-4" /> Order now in {location}
+            </Button>
+            <Button size="lg" variant="outline" className="border-cream/40 bg-cream/10 text-cream hover:bg-cream/20 backdrop-blur" onClick={onBuild}>
+              <ChefHat className="h-4 w-4" /> Build Your Own →
+            </Button>
+          </div>
+
+          <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="flex -space-x-2">{[1,2,3,4].map(i => <div key={i} className="h-8 w-8 rounded-full border-2 border-cream bg-gradient-warm" />)}</div>
+              <span className="text-cream/90"><b className="text-cream">1.2M+</b> happy customers</span>
+            </div>
+            <div className="flex items-center gap-1.5"><Star className="h-4 w-4 fill-accent text-accent" /><b>4.8</b> · 240K reviews</div>
+            <div className="flex items-center gap-1.5">
+              <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" /><span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: "var(--success)" }} /></span>
+              <span className="text-cream/90"><b>{liveOrders}</b> ordering right now</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-auto pt-8 text-cream/60 text-xs uppercase tracking-widest font-bold animate-pulse">
+          ← → use arrow keys · 8 slides of pure crave →
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SlideWhyUs({ reviewIdx, setReviewIdx, dealLeft, fmtTime }: { reviewIdx: number; setReviewIdx: (n: number) => void; dealLeft: number; fmtTime: (s: number) => string }) {
+  const stats = [
+    { icon: Zap,   value: "10",      unit: "min",   label: "Express delivery",  tint: "from-amber-400 to-orange-500" },
+    { icon: Users, value: "1.2M+",   unit: "",      label: "Happy customers",   tint: "from-rose-400 to-red-600" },
+    { icon: Star,  value: "4.8",     unit: "★",     label: "Avg rating",         tint: "from-yellow-400 to-amber-500" },
+    { icon: Award, value: "100%",    unit: "",      label: "Halal certified",   tint: "from-emerald-400 to-teal-600" },
+  ];
+  return (
+    <section className="container mx-auto px-4 py-10" style={{ minHeight: "calc(100vh - 130px)" }}>
+      <div className="text-center max-w-2xl mx-auto">
+        <Badge className="mb-3 bg-accent/20 text-accent-foreground border border-accent/40">Real proof · zero fluff</Badge>
+        <h2 className="text-balance text-4xl md:text-6xl font-black tracking-tight">Why 1.2 million people <span className="text-fancy">never go back</span></h2>
+        <p className="mt-3 text-muted-foreground">Numbers we update live. Reviews we don't filter.</p>
+      </div>
+
+      <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
+        {stats.map((s, i) => (
+          <Card key={i} className="border-2 bg-gradient-card p-5 text-center hover:-translate-y-1 hover:border-primary transition-all">
+            <div className={`mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${s.tint} text-white shadow-lg`}>
+              <s.icon className="h-7 w-7 animate-icon-pop" strokeWidth={2.5} />
+            </div>
+            <div className="text-4xl font-black tabular-nums">{s.value}<span className="text-2xl text-primary">{s.unit}</span></div>
+            <div className="text-xs uppercase tracking-wider font-semibold text-muted-foreground mt-1">{s.label}</div>
+          </Card>
+        ))}
+      </div>
+
+      <div className="mt-8 grid lg:grid-cols-[1fr_360px] gap-6">
+        <Card className="relative overflow-hidden border-2 p-8 text-center shadow-soft bg-gradient-card">
+          <div className="absolute top-3 left-3 text-8xl leading-none opacity-10">"</div>
+          <div key={reviewIdx} className="animate-float-up relative">
+            <div className="flex justify-center gap-0.5 text-accent">
+              {[1,2,3,4,5].map(i => <Star key={i} className="h-5 w-5 fill-current" />)}
+            </div>
+            <p className="mt-4 text-xl font-medium text-balance leading-relaxed">"{REVIEWS[reviewIdx].text}"</p>
+            <div className="mt-4 text-sm">
+              <div className="font-bold">{REVIEWS[reviewIdx].name}</div>
+              <div className="text-muted-foreground">{REVIEWS[reviewIdx].order} · verified order</div>
+            </div>
+            <div className="mt-5 flex justify-center gap-1.5">
+              {REVIEWS.map((_, i) => (
+                <button key={i} onClick={() => setReviewIdx(i)} className={`h-1.5 rounded-full transition-all ${i === reviewIdx ? "w-6 bg-primary" : "w-1.5 bg-muted-foreground/30"}`} />
+              ))}
+            </div>
+          </div>
+        </Card>
+
+        <Card className="overflow-hidden border-2 border-primary/30 bg-gradient-hero text-cream shadow-warm">
+          <div className="p-6 space-y-4">
+            <Badge className="bg-cream/20 text-cream border-cream/30 backdrop-blur w-fit">⚡ FLASH DEAL</Badge>
+            <div className="text-3xl font-black leading-tight">Up to <span className="text-accent">45% OFF</span> on every shawarma under ₹200</div>
+            <div className="flex items-center gap-3 rounded-xl bg-charcoal/40 p-3 backdrop-blur">
+              <Timer className="h-6 w-6 text-accent" />
+              <div className="leading-tight">
+                <div className="text-[10px] uppercase tracking-wider font-bold text-cream/70">Ends in</div>
+                <div className="font-mono text-3xl font-black text-cream tabular-nums">{fmtTime(dealLeft)}</div>
+              </div>
+            </div>
+            <div className="text-xs text-cream/70">Stock refreshed daily. Once it's gone, it's gone.</div>
+          </div>
+        </Card>
+      </div>
+    </section>
+  );
+}
+
+function SlideMagic() {
+  const features = [
+    { icon: Tv,     title: "Live Flame Cam",        sub: "Watch your shawarma roast in real time on our kitchen livestream — yes, actually.", tint: "from-orange-500 to-red-600" },
+    { icon: Gift,   title: "₹1000 Magic Club",      sub: "Cross ₹1000 and free Baklava + free delivery + 10% OFF appear instantly. No code.", tint: "from-amber-400 to-orange-500" },
+    { icon: Smile,  title: "Pay-After-Bite",        sub: "First-time? Take one bite. If you don't smile, we eat the bill. Literally.", tint: "from-rose-400 to-pink-600" },
+    { icon: Phone,  title: "Midnight Hotline",      sub: "Craving at 2 AM? Our chef answers a real phone and wraps one for you.", tint: "from-indigo-500 to-purple-600" },
+    { icon: Trophy, title: "Streak Rewards",        sub: "Order 3 weeks in a row → unlock the Secret Menu (off-menu chef specials).", tint: "from-yellow-400 to-amber-600" },
+    { icon: Lock,   title: "Locked Recipe Vault",   sub: "Crack 5 Secret Menu items → join the Vault. Lifetime 20% off. ~847 members.", tint: "from-emerald-500 to-teal-600" },
+  ];
+  return (
+    <section className="container mx-auto px-4 py-10" style={{ minHeight: "calc(100vh - 130px)" }}>
+      <div className="text-center max-w-2xl mx-auto">
+        <Badge className="mb-3 bg-primary text-primary-foreground shadow-warm"><Sparkles className="mr-1 h-3 w-3" /> THE MAGIC</Badge>
+        <h2 className="text-balance text-4xl md:text-6xl font-black tracking-tight">Six things no one else <span className="text-fancy">dares to do</span></h2>
+        <p className="mt-3 text-muted-foreground">We didn't build a delivery app. We built obsession.</p>
+      </div>
+
+      <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {features.map((f, i) => (
+          <Card key={i} className="group relative overflow-hidden border-2 bg-gradient-card p-6 transition-all hover:-translate-y-2 hover:border-primary hover:shadow-warm">
+            <div className={`absolute -top-12 -right-12 h-32 w-32 rounded-full bg-gradient-to-br ${f.tint} opacity-15 blur-2xl transition-opacity group-hover:opacity-30`} />
+            <div className={`relative mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${f.tint} text-white shadow-lg`}>
+              <f.icon className="h-7 w-7 animate-icon-pop" strokeWidth={2.5} />
+            </div>
+            <h3 className="relative text-xl font-black tracking-tight">{f.title}</h3>
+            <p className="relative mt-2 text-sm text-muted-foreground leading-relaxed">{f.sub}</p>
+            <div className="relative mt-3 text-[10px] font-black uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+              Only at Shawarmato →
+            </div>
+          </Card>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function SlideMenu({ activeCat, setActiveCat, filteredItems, cart, addToCart, removeFromCart, liveOrders, location }: {
+  activeCat: string; setActiveCat: (s: string) => void; filteredItems: ShawarmaItem[];
+  cart: Record<string, { qty: number }>;
+  addToCart: (k: string, name: string, price: number, note?: string) => void;
+  removeFromCart: (k: string) => void;
+  liveOrders: number; location: string;
+}) {
+  return (
+    <section className="container mx-auto px-4 py-8" style={{ minHeight: "calc(100vh - 130px)" }}>
+      <div className="flex flex-wrap items-end justify-between gap-3 mb-4">
+        <div>
+          <Badge className="mb-2 bg-accent/20 text-accent-foreground border border-accent/40">What's cravin'?</Badge>
+          <h2 className="text-3xl md:text-4xl font-black tracking-tight">
+            {activeCat === "All" ? "Best shawarmas" : activeCat} <span className="text-primary">in {location}</span>
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">{filteredItems.length} items · best prices guaranteed</p>
+        </div>
+        <div className="flex items-center gap-2 rounded-full border bg-card px-4 py-2 text-sm">
+          <TrendingUp className="h-4 w-4 text-success" />
+          <span className="font-semibold">{liveOrders}</span>
+          <span className="text-muted-foreground">orders / hour</span>
+        </div>
+      </div>
+
+      <div className="flex gap-2 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide">
+        <CategoryChip name="All" icon="🔥" count={SHAWARMA_ITEMS.length} active={activeCat === "All"} onClick={() => setActiveCat("All")} />
+        {CATEGORIES.map((c) => (
+          <CategoryChip key={c.name} name={c.name} icon={c.icon} count={c.count} active={activeCat === c.name} onClick={() => setActiveCat(c.name)} />
+        ))}
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 max-h-[55vh] overflow-y-auto pr-1 pb-20">
+        {filteredItems.map((item) => <ItemCard key={item.id} item={item} qty={cart[item.id]?.qty || 0} onAdd={() => addToCart(item.id, item.name, item.price)} onRemove={() => removeFromCart(item.id)} />)}
+      </div>
+    </section>
+  );
+}
+
+function SlideFounders() {
+  return (
+    <section className="container mx-auto px-4 py-10" style={{ minHeight: "calc(100vh - 130px)" }}>
+      <div className="text-center max-w-2xl mx-auto">
+        <Badge className="mb-3 bg-primary text-primary-foreground">THE HUMANS</Badge>
+        <h2 className="text-balance text-4xl md:text-6xl font-black tracking-tight">Two obsessed humans, <span className="text-fancy">one perfect roll</span></h2>
+        <p className="mt-3 text-muted-foreground">We won't pretend a brand made this. We did. And we'd love you to know us.</p>
+      </div>
+
+      <div className="mt-8 grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        {FOUNDERS.map((f) => (
+          <Card key={f.name} className="group relative overflow-hidden border-2 bg-gradient-card transition-all hover:-translate-y-1 hover:border-primary hover:shadow-warm">
+            <div className="relative h-64 overflow-hidden">
+              <img src={f.img} alt={f.name} loading="lazy" width={768} height={768} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
+              <div className="absolute inset-0 bg-gradient-to-t from-charcoal/85 via-charcoal/20 to-transparent" />
+              <Badge className="absolute top-3 right-3 bg-accent text-charcoal font-bold">{f.badge}</Badge>
+              <div className="absolute bottom-3 left-4 right-4 text-cream">
+                <div className="text-2xl font-black leading-tight">{f.name}</div>
+                <div className="text-xs uppercase tracking-widest font-semibold text-accent">{f.role}</div>
+              </div>
+            </div>
+            <div className="p-5 space-y-3">
+              <p className="italic text-base font-medium text-balance leading-relaxed text-foreground/90">"{f.quote}"</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{f.bio}</p>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      <div className="mt-8 mx-auto max-w-3xl text-center text-sm text-muted-foreground italic">
+        Want to meet us? We do a free Saturday kitchen tour every weekend. Bring a friend, leave with a recipe.
+      </div>
+    </section>
+  );
+}
+
+function SlideFAQs() {
+  return (
+    <section className="container mx-auto px-4 py-10" style={{ minHeight: "calc(100vh - 130px)" }}>
+      <div className="text-center max-w-2xl mx-auto">
+        <Badge className="mb-3 bg-accent/20 text-accent-foreground border border-accent/40">Honest answers</Badge>
+        <h2 className="text-balance text-4xl md:text-6xl font-black tracking-tight">The questions <span className="text-fancy">everyone whispers</span></h2>
+        <p className="mt-3 text-muted-foreground">No legalese. Real talk from the founders.</p>
+      </div>
+
+      <div className="mt-8 max-w-3xl mx-auto">
+        <Accordion type="single" collapsible className="space-y-2">
+          {FAQS.map((f, i) => (
+            <AccordionItem key={i} value={`faq-${i}`} className="rounded-xl border-2 bg-gradient-card px-5 transition-all hover:border-primary/40 data-[state=open]:border-primary/60 data-[state=open]:shadow-warm">
+              <AccordionTrigger className="text-left text-base font-bold hover:no-underline py-4">
+                <span className="flex items-start gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-black text-primary-foreground">{i + 1}</span>
+                  <span>{f.q}</span>
+                </span>
+              </AccordionTrigger>
+              <AccordionContent className="text-sm leading-relaxed text-muted-foreground pl-9 pb-4">
+                {f.a}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>
+    </section>
+  );
+}
+
+function SlideOrderCTA({ cartCount, cartTotal, onOpenCart, onMenu, rewardProgress, amountToReward, rewardUnlocked }: {
+  cartCount: number; cartTotal: number; onOpenCart: () => void; onMenu: () => void;
+  rewardProgress: number; amountToReward: number; rewardUnlocked: boolean;
+}) {
+  return (
+    <section className="relative overflow-hidden" style={{ minHeight: "calc(100vh - 130px)" }}>
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroImg})` }} />
+      <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, oklch(0.18 0.025 40 / 0.95) 0%, oklch(0.18 0.025 40 / 0.85) 100%)" }} />
+      <div className="container relative mx-auto flex flex-col items-center justify-center px-4 py-12 text-center text-cream" style={{ minHeight: "calc(100vh - 130px)" }}>
+        <div className="text-7xl mb-4 animate-confetti-burst">🌯</div>
+        <Badge className="mb-4 bg-accent text-charcoal font-bold">YOUR MOMENT</Badge>
+        <h2 className="text-balance text-5xl md:text-7xl font-black leading-[1] max-w-3xl">
+          One tap. <span className="text-fancy">28 minutes.</span><br />Pure joy at your door.
+        </h2>
+        <p className="mt-5 text-lg text-cream/85 max-w-xl">
+          Your shawarma is one click away. Free Baklava is one ₹1000 cart away. Your future regret is one closed tab away.
+        </p>
+
+        {cartCount > 0 ? (
+          <div className="mt-8 w-full max-w-md rounded-2xl border-2 border-cream/20 bg-charcoal/60 p-5 backdrop-blur">
+            <div className="text-sm text-cream/70 uppercase tracking-wider font-bold">Cart ready</div>
+            <div className="mt-1 text-4xl font-black text-cream">{cartCount} items · ₹{cartTotal}</div>
+            {!rewardUnlocked && (
+              <>
+                <div className="mt-3 text-xs text-cream/80">Add ₹{amountToReward} more → 🎁 Free Baklava + 🚚 Free Delivery + 10% OFF</div>
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-cream/15">
+                  <div className="h-full rounded-full bg-gradient-warm transition-all duration-500" style={{ width: `${rewardProgress}%` }} />
+                </div>
+              </>
+            )}
+            {rewardUnlocked && (
+              <div className="mt-3 text-sm font-bold text-accent">🎉 Reward unlocked — Free Baklava, Free Delivery, 10% OFF applied</div>
+            )}
+            <Button size="lg" className="mt-4 w-full shadow-warm text-base font-bold animate-pulse-ring" onClick={onOpenCart}>
+              <ShoppingCart className="h-4 w-4" /> Checkout · ₹{cartTotal}
+            </Button>
+          </div>
+        ) : (
+          <div className="mt-8 flex flex-wrap gap-3 justify-center">
+            <Button size="lg" className="shadow-warm text-base font-bold animate-pulse-ring" onClick={onMenu}>
+              <Flame className="h-4 w-4" /> Browse the menu
+            </Button>
+            <Button size="lg" variant="outline" className="border-cream/40 bg-cream/10 text-cream hover:bg-cream/20 backdrop-blur" onClick={onOpenCart}>
+              <ShoppingCart className="h-4 w-4" /> Open cart
+            </Button>
+          </div>
+        )}
+
+        <div className="mt-12 grid grid-cols-3 gap-6 text-center max-w-lg">
+          {[
+            { v: "10min", l: "express" },
+            { v: "4.8★",  l: "rated" },
+            { v: "100%",  l: "halal" },
+          ].map((s) => (
+            <div key={s.l}>
+              <div className="text-3xl font-black text-accent">{s.v}</div>
+              <div className="text-[10px] uppercase tracking-widest font-bold text-cream/60">{s.l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
