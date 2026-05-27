@@ -220,6 +220,37 @@ function Index() {
     total: number; stage: 0 | 1 | 2 | 3; placedAt: number;
   } | null>(null);
   const [trackerOpen, setTrackerOpen] = useState(false);
+  const [greetingOpen, setGreetingOpen] = useState(false);
+  const [customerName, setCustomerName] = useState("");
+
+  // ====== Pop sound (WebAudio, no asset) ======
+  const playPop = () => {
+    try {
+      const AC: typeof AudioContext =
+        (window as unknown as { AudioContext: typeof AudioContext; webkitAudioContext?: typeof AudioContext }).AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const ctx = new AC();
+      const now = ctx.currentTime;
+      // little two-note "ding-pop"
+      [
+        { f: 880, t: 0,    d: 0.12, v: 0.18 },
+        { f: 1320, t: 0.09, d: 0.18, v: 0.22 },
+      ].forEach(({ f, t, d, v }) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "sine";
+        o.frequency.setValueAtTime(f, now + t);
+        o.frequency.exponentialRampToValueAtTime(f * 0.6, now + t + d);
+        g.gain.setValueAtTime(0.0001, now + t);
+        g.gain.exponentialRampToValueAtTime(v, now + t + 0.015);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + t + d);
+        o.connect(g).connect(ctx.destination);
+        o.start(now + t);
+        o.stop(now + t + d + 0.02);
+      });
+      setTimeout(() => ctx.close(), 600);
+    } catch { /* silent */ }
+  };
 
   // ====== Psychology widgets state ======
   const [liveOrders, setLiveOrders] = useState(247);
@@ -290,6 +321,7 @@ function Index() {
       const next = { ...c, [key]: { name, price, qty: (c[key]?.qty || 0) + 1, note: note ?? c[key]?.note } };
       const nextSub = prevSub + price;
       if (prevSub < REWARD_THRESHOLD && nextSub >= REWARD_THRESHOLD) {
+        playPop();
         setTimeout(() => {
           toast.success("🎉 Reward unlocked!", {
             description: "Free Baklava + Free Delivery + 10% OFF applied!",
@@ -407,12 +439,15 @@ function Index() {
             <Badge className="mb-4 bg-accent/20 text-accent border border-accent/40 backdrop-blur">
               <Sparkles className="mr-1 h-3 w-3" /> #1 Shawarma destination in {location}
             </Badge>
-            <h1 className="text-balance text-4xl font-black leading-[1.05] md:text-6xl">
-              Authentic shawarma, <br />
-              <span className="bg-gradient-warm bg-clip-text text-transparent">slow-roasted</span> to perfection.
+            <h1 className="text-balance text-5xl font-black leading-[1.02] md:text-7xl">
+              <span className="block text-cream/95">Crave it.</span>
+              <span className="block text-fancy drop-shadow-[0_2px_20px_rgba(255,120,60,0.35)]">Unwrap heaven.</span>
+              <span className="mt-2 block text-2xl md:text-3xl font-semibold text-cream/80 tracking-tight">
+                Slow-roasted shawarma, <span className="italic text-accent">obsessively</span> crafted.
+              </span>
             </h1>
-            <p className="mt-4 max-w-lg text-lg text-cream/85">
-              Hand-carved meats. Toasted pita. Bold sauces. Delivered hot in 30 minutes — or your shawarma is on us.
+            <p className="mt-5 max-w-lg text-lg text-cream/85 leading-relaxed">
+              Charcoal-kissed meats. Pillowy pita. Sauces stolen from <span className="text-accent font-semibold">Beirut grandmothers</span>. On your doorstep in 30 minutes — or it's <span className="font-bold text-cream">on the house</span>.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -433,17 +468,27 @@ function Index() {
       </section>
 
       {/* ============ TRUST BAR ============ */}
-      <section className="border-b bg-card">
-        <div className="container mx-auto grid grid-cols-2 gap-4 px-4 py-6 md:grid-cols-4">
+      <section className="border-b bg-gradient-to-b from-card to-background">
+        <div className="container mx-auto grid grid-cols-2 gap-3 px-4 py-8 md:grid-cols-4 md:gap-5">
           {[
-            { icon: Zap,    title: "10-min express",  sub: "or free on us" },
-            { icon: Award,  title: "100% Halal",      sub: "certified meats" },
-            { icon: Users,  title: "1.2M+ orders",    sub: "served worldwide" },
-            { icon: Heart,  title: "98% love it",     sub: "5-star reviews" },
+            { icon: Zap,    title: "10-min express",  sub: "or it's on us",       tint: "from-amber-400 to-orange-500", glow: "shadow-[0_8px_30px_-8px_rgba(251,146,60,0.55)]" },
+            { icon: Award,  title: "100% Halal",      sub: "certified daily",     tint: "from-emerald-400 to-teal-600", glow: "shadow-[0_8px_30px_-8px_rgba(20,184,166,0.5)]" },
+            { icon: Users,  title: "1.2M+ fans",      sub: "served worldwide",    tint: "from-rose-400 to-red-600",     glow: "shadow-[0_8px_30px_-8px_rgba(244,63,94,0.55)]" },
+            { icon: Heart,  title: "98% love it",     sub: "real verified ❤",     tint: "from-pink-400 to-fuchsia-600", glow: "shadow-[0_8px_30px_-8px_rgba(217,70,239,0.55)]" },
           ].map((t, i) => (
-            <div key={i} className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary"><t.icon className="h-5 w-5" /></div>
-              <div className="leading-tight"><div className="font-bold text-sm">{t.title}</div><div className="text-xs text-muted-foreground">{t.sub}</div></div>
+            <div
+              key={i}
+              className={`group relative flex items-center gap-3 rounded-2xl border-2 bg-gradient-card p-3 md:p-4 transition-all hover:-translate-y-1 hover:border-primary ${t.glow}`}
+              style={{ animationDelay: `${i * 80}ms` }}
+            >
+              <div className={`relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${t.tint} text-white shadow-lg`}>
+                <span className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
+                <t.icon className="h-7 w-7 animate-icon-pop drop-shadow" strokeWidth={2.5} />
+              </div>
+              <div className="leading-tight">
+                <div className="text-base font-black tracking-tight">{t.title}</div>
+                <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{t.sub}</div>
+              </div>
             </div>
           ))}
         </div>
@@ -629,16 +674,17 @@ function Index() {
                   <span className="text-2xl font-black text-primary">₹{cartTotal}</span>
                 </div>
               </div>
-              <Button size="lg" className="w-full shadow-warm" onClick={() => {
+              <Button size="lg" className="w-full shadow-warm text-base font-bold animate-pulse-ring" onClick={() => {
                 const items = Object.values(cart);
                 const id = `SW${Math.floor(1000 + Math.random() * 9000)}`;
+                playPop();
                 setOrder({ id, items, total: cartTotal, stage: 0, placedAt: Date.now() });
                 toast.success(`Order ${id} confirmed! 🌯`, { description: "Chef is on it." });
                 setCart({});
                 setCartOpen(false);
-                setTrackerOpen(true);
+                setGreetingOpen(true);
               }}>
-                Checkout · ₹{cartTotal}
+                <Sparkles className="h-4 w-4" /> Place order · ₹{cartTotal}
               </Button>
             </>
           ) : (
@@ -690,6 +736,52 @@ function Index() {
               {order.stage === 3 && <Button className="w-full" onClick={() => { setOrder(null); setTrackerOpen(false); }}>Done</Button>}
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* ============ GREETING ============ */}
+      <Dialog open={greetingOpen} onOpenChange={setGreetingOpen}>
+        <DialogContent className="max-w-md overflow-hidden border-2 border-primary/30 bg-gradient-card">
+          <div className="absolute -top-16 -right-16 h-40 w-40 rounded-full bg-gradient-warm opacity-30 blur-3xl" />
+          <div className="absolute -bottom-16 -left-16 h-40 w-40 rounded-full bg-gradient-hero opacity-25 blur-3xl" />
+          <DialogHeader className="relative">
+            <div className="mx-auto mb-2 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-hero text-5xl shadow-warm animate-confetti-burst">
+              🌯
+            </div>
+            <DialogTitle className="text-center text-3xl font-black">
+              <span className="text-fancy">Shukran{customerName ? `, ${customerName}` : ""}!</span>
+            </DialogTitle>
+            <DialogDescription className="text-center text-base">
+              {order ? (
+                <>Order <b className="text-primary">{order.id}</b> is sizzling on the grill. Our chef just smiled. 👨‍🍳</>
+              ) : "Your order is in good hands."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="relative space-y-3">
+            <div className="rounded-xl border-2 border-dashed border-primary/30 bg-primary/5 p-3 text-center text-sm">
+              <div className="font-bold text-primary">A little secret from us 🤫</div>
+              <div className="mt-1 text-muted-foreground">
+                "The best shawarma is the one shared. Tag <b>@shawarmato</b> for a chance to win <b>free shawarma for a month</b>."
+              </div>
+            </div>
+            {!customerName && (
+              <Input
+                placeholder="What should we call you? (optional)"
+                onChange={(e) => setCustomerName(e.target.value.trim())}
+                className="text-center font-semibold"
+              />
+            )}
+            <Button
+              size="lg"
+              className="w-full shadow-warm"
+              onClick={() => { setGreetingOpen(false); setTrackerOpen(true); }}
+            >
+              <Bike className="h-4 w-4" /> Track my shawarma
+            </Button>
+            <p className="text-center text-xs text-muted-foreground">
+              Estimated arrival in <b className="text-foreground">28–32 min</b> · Keep the napkins ready 😋
+            </p>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
