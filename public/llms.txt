@@ -1,0 +1,8 @@
+# Shawarmato
+
+> Shawarmato is a shawarma delivery experience — order authentic chicken, beef, mutton, and veg shawarma, kebabs, and platters from top-rated Middle Eastern chefs, with build-your-own wraps and 30-minute delivery.
+
+## Pages
+
+- [Home](/): Browse the menu, build your own shawarma, see live order tracking, founders, and FAQs.
+- [Sitemap](/sitemap.xml): Machine-readable list of indexable URLs.
