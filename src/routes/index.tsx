@@ -47,7 +47,73 @@ const pickImg = (s: string) => {
   return imgChicken;
 };
 
-export const Route = createFileRoute("/")({ component: Index });
+export const Route = createFileRoute("/")({
+  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Shawarmato — Best Shawarma Delivery | Order Shawarma Online" },
+      { name: "description", content: "Shawarmato is the #1 shawarma delivery app. Order authentic chicken, beef, mutton & veg shawarma, kebabs and platters from top-rated chefs near you." },
+      { name: "keywords", content: "shawarmato, shawarma, shawarma delivery, order shawarma, best shawarma, chicken shawarma, beef shawarma, kebab delivery, middle eastern food, shawarmato app, shawarmato online" },
+      { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
+      { name: "application-name", content: "Shawarmato" },
+      { name: "apple-mobile-web-app-title", content: "Shawarmato" },
+      { property: "og:site_name", content: "Shawarmato" },
+      { property: "og:title", content: "Shawarmato — Best Shawarma Delivery | Order Shawarma Online" },
+      { property: "og:description", content: "Order authentic shawarma, kebabs and platters from top-rated chefs. Hot, fresh, wrapped to perfection — only on Shawarmato." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://shawarmato.lovable.app/" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Shawarmato — Best Shawarma Delivery" },
+      { name: "twitter:description", content: "Order authentic shawarma, kebabs and platters from top-rated chefs on Shawarmato." },
+    ],
+    links: [
+      { rel: "canonical", href: "https://shawarmato.lovable.app/" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://shawarmato.lovable.app/#org",
+              name: "Shawarmato",
+              alternateName: ["Shawarma to", "Shawarmato App"],
+              url: "https://shawarmato.lovable.app/",
+              logo: "https://shawarmato.lovable.app/favicon.ico",
+              sameAs: ["https://shawarmato.lovable.app/"],
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://shawarmato.lovable.app/#website",
+              name: "Shawarmato",
+              url: "https://shawarmato.lovable.app/",
+              publisher: { "@id": "https://shawarmato.lovable.app/#org" },
+              potentialAction: {
+                "@type": "SearchAction",
+                target: "https://shawarmato.lovable.app/?q={search_term_string}",
+                "query-input": "required name=search_term_string",
+              },
+            },
+            {
+              "@type": "FoodEstablishment",
+              name: "Shawarmato",
+              servesCuisine: ["Middle Eastern", "Shawarma", "Lebanese", "Turkish"],
+              priceRange: "₹₹",
+              url: "https://shawarmato.lovable.app/",
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: "4.9",
+                reviewCount: "12483",
+              },
+            },
+          ],
+        }),
+      },
+    ],
+  }),
+});
 
 type ShawarmaItem = {
   id: string;
