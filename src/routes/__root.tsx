@@ -72,18 +72,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Shawarmato — Discover the Best Shawarma Near You (Demo site)" },
-      { name: "description", content: "Order from the city's top-rated shawarma and Middle Eastern restaurants. Hot, fresh, wrapped to perfection.(disclaimer: a fake/demo website)" },
+      { title: "Shawarmato — Best Shawarma Delivery & Order Online" },
+      { name: "description", content: "Order authentic chicken, beef, mutton & veg shawarma, kebabs and platters from top-rated chefs near you on Shawarmato." },
       { name: "author", content: "Shawarmato" },
-      { property: "og:title", content: "Shawarmato — Discover the Best Shawarma Near You (Demo site)" },
-      { property: "og:description", content: "Order from the city's top-rated shawarma and Middle Eastern restaurants. Hot, fresh, wrapped to perfection.(disclaimer: a fake/demo website)" },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Shawarmato — Discover the Best Shawarma Near You (Demo site)" },
-      { name: "twitter:description", content: "Order from the city's top-rated shawarma and Middle Eastern restaurants. Hot, fresh, wrapped to perfection.(disclaimer: a fake/demo website)" },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/452d709e-d1cb-4593-b3a8-f22a1f3cee90" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/452d709e-d1cb-4593-b3a8-f22a1f3cee90" },
+      { property: "og:site_name", content: "Shawarmato" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:site", content: "@Shawarmato" },
     ],
     links: [
       {
