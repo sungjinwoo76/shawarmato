@@ -616,9 +616,9 @@ function Index() {
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="flex items-center rounded-full border-2 border-primary">
-                        <button onClick={() => removeFromCart(k)} className="px-2 py-1 text-primary"><Minus className="h-3 w-3" /></button>
+                        <button aria-label="Decrease quantity" onClick={() => removeFromCart(k)} className="px-2 py-1 text-primary"><Minus className="h-3 w-3" /></button>
                         <span className="w-6 text-center text-sm font-bold text-primary">{item.qty}</span>
-                        <button onClick={() => addToCart(k, item.name, item.price, item.note)} className="px-2 py-1 text-primary"><Plus className="h-3 w-3" /></button>
+                        <button aria-label="Increase quantity" onClick={() => addToCart(k, item.name, item.price, item.note)} className="px-2 py-1 text-primary"><Plus className="h-3 w-3" /></button>
                       </div>
                     </div>
                   </div>
@@ -805,9 +805,9 @@ function ItemCard({ item, qty, onAdd, onRemove }: { item: ShawarmaItem; qty: num
           </div>
           {qty > 0 ? (
             <div className="flex items-center rounded-full border-2 border-primary shadow-warm">
-              <button onClick={onRemove} className="px-2 py-1 text-primary"><Minus className="h-3 w-3" /></button>
+              <button aria-label="Decrease quantity" onClick={onRemove} className="px-2 py-1 text-primary"><Minus className="h-3 w-3" /></button>
               <span className="w-5 text-center text-sm font-bold text-primary">{qty}</span>
-              <button onClick={onAdd} className="px-2 py-1 text-primary"><Plus className="h-3 w-3" /></button>
+              <button aria-label="Increase quantity" onClick={onAdd} className="px-2 py-1 text-primary"><Plus className="h-3 w-3" /></button>
             </div>
           ) : (
             <Button size="sm" onClick={onAdd} className="rounded-full shadow-warm"><Plus className="h-4 w-4" /> Add</Button>
