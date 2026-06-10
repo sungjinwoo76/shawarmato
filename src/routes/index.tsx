@@ -101,6 +101,14 @@ export const Route = createFileRoute("/")({
                 reviewCount: "12483",
               },
             },
+            {
+              "@type": "FAQPage",
+              mainEntity: FAQS.map((f) => ({
+                "@type": "Question",
+                name: f.q,
+                acceptedAnswer: { "@type": "Answer", text: f.a },
+              })),
+            },
           ],
         }),
       },
