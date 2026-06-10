@@ -51,20 +51,13 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Shawarmato — Best Shawarma Delivery | Order Shawarma Online" },
-      { name: "description", content: "Shawarmato is the #1 shawarma delivery app. Order authentic chicken, beef, mutton & veg shawarma, kebabs and platters from top-rated chefs near you." },
       { name: "keywords", content: "shawarmato, shawarma, shawarma delivery, order shawarma, best shawarma, chicken shawarma, beef shawarma, kebab delivery, middle eastern food, shawarmato app, shawarmato online" },
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
       { name: "application-name", content: "Shawarmato" },
       { name: "apple-mobile-web-app-title", content: "Shawarmato" },
-      { property: "og:site_name", content: "Shawarmato" },
-      { property: "og:title", content: "Shawarmato — Best Shawarma Delivery | Order Shawarma Online" },
-      { property: "og:description", content: "Order authentic shawarma, kebabs and platters from top-rated chefs. Hot, fresh, wrapped to perfection — only on Shawarmato." },
-      { property: "og:type", content: "website" },
       { property: "og:url", content: "https://shawarmato.lovable.app/" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Shawarmato — Best Shawarma Delivery" },
-      { name: "twitter:description", content: "Order authentic shawarma, kebabs and platters from top-rated chefs on Shawarmato." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/452d709e-d1cb-4593-b3a8-f22a1f3cee90" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/452d709e-d1cb-4593-b3a8-f22a1f3cee90" },
     ],
     links: [
       { rel: "canonical", href: "https://shawarmato.lovable.app/" },
